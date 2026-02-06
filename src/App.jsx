@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Body from "./components/Body";
-import Login from "./components/login";
-import Profile from "./components/Profile";
+import Login from "./components/Login";
 
 const App = () => {
   return (
@@ -10,7 +9,6 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Body />}>
           <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>
