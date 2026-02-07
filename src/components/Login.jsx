@@ -1,10 +1,15 @@
 import axios from "axios";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUser } from "../store/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [signIn, setSignIn] = useState(true);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const dispatch = useDispatch();
+  const naviagte = useNavigate();
 
   const handlePage = () => {
     setSignIn((prev) => !prev);
@@ -19,7 +24,7 @@ const Login = () => {
     if (!emailID || !password) return;
 
     try {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:3000/login",
         {
           emailID,
@@ -27,6 +32,8 @@ const Login = () => {
         },
         { withCredentials: true },
       );
+      dispatch(addUser(res.data.user));
+      naviagte("/feed");
     } catch (err) {
       console.log(err);
     }
