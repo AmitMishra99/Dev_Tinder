@@ -1,51 +1,71 @@
-import React from "react";
-import { useState } from "react";
+import axios from "axios";
+import React, { useRef, useState } from "react";
 
 const Login = () => {
-  const [signIn, signUp] = useState(true);
+  const [signIn, setSignIn] = useState(true);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
-  function handleSignUp() {
-    signUp(!signIn);
-  }
+  const handlePage = () => {
+    setSignIn((prev) => !prev);
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const emailID = emailRef.current.value;
+    const password = passwordRef.current.value;
+
+    if (!emailID || !password) return;
+
+    try {
+      await axios.post(
+        "http://localhost:3000/login",
+        {
+          emailID,
+          password,
+        },
+        { withCredentials: true },
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
-    <div className="flex justify-center items-center  mt-20">
-      <div className="flex flex-col justify-center it  bg-pink-500 gap-2 w-fit px-12 py-10 rounded-2xl ">
-        <p className="text-center text-2xl mb-3 ">
+    <div className="flex justify-center items-center mt-20">
+      <form
+        onSubmit={handleLogin}
+        className="flex flex-col bg-pink-500 gap-2 px-12 py-10 rounded-2xl"
+      >
+        <p className="text-center text-2xl mb-3">
           {signIn ? "Login" : "Sign Up"}
         </p>
-        {signIn ? (
-          ""
-        ) : (
+
+        {!signIn && (
           <>
             <p>Full Name</p>
-            <input
-              className="border p-1"
-              type="text"
-              placeholder="Enter Your Name"
-            />
+            <input className="border p-1" type="text" />
           </>
         )}
-        <p>Email</p>
-        <input
-          className="border p-1"
-          type="text"
-          placeholder="Enter Your Email ID"
-        />
-        <p>Password </p>
-        <input
-          className="border p-1"
-          type="text"
-          placeholder="Enter Your Password"
-        />
-        <button className="bg-black p-1 mt-3 text-white">Login</button>
-        <p>
-          {signIn ? "Already registered ?" : " New User ?"}{" "}
-          <span className="underline" onClick={handleSignUp}>
+
+        <p>Email ID</p>
+        <input ref={emailRef} className="border p-1" type="email" />
+
+        <p>Password</p>
+        <input ref={passwordRef} className="border p-1" type="password" />
+
+        <button type="submit" className="bg-black p-1 mt-3 text-white">
+          {signIn ? "Login" : "Sign Up"}
+        </button>
+
+        <p className="tracking-tight">
+          {signIn ? "New User ?" : "Already registered ?"}{" "}
+          <span className="underline cursor-pointer" onClick={handlePage}>
             {signIn ? "Sign up now" : "Sign in now"}
           </span>
         </p>
-      </div>
+      </form>
     </div>
   );
 };
