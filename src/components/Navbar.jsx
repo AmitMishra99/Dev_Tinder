@@ -1,9 +1,25 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/constants";
+import { removeUser } from "../store/userSlice";
 
 const Navbar = () => {
   const brandColor = "#FF4B2B";
 
   const user = useSelector((store) => store.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const handleLogout = async () => {
+    try {
+      await axios.post(BASE_URL + "/logout", { withCredentials: true });
+      dispatch(removeUser());
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-3">
@@ -62,9 +78,12 @@ const Navbar = () => {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <a className="dropdown-item text-danger" href="/logout">
+                  <p
+                    onClick={handleLogout}
+                    className="dropdown-item text-danger"
+                  >
                     Logout
-                  </a>
+                  </p>
                 </li>
               </ul>
             </div>

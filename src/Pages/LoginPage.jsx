@@ -8,8 +8,9 @@ import { BASE_URL } from "../utils/constants";
 const LoginPage = () => {
   const brandColor = "#FF4B2B";
 
-  const [emailID, setemailID] = useState("");
-  const [password, setPassword] = useState("");
+  const [emailID, setemailID] = useState("webdev6@gmail.com");
+  const [password, setPassword] = useState("Amit@1234");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const LoginPage = () => {
       dispatch(addUser(res.data.user));
       navigate("/feed");
     } catch (err) {
-      console.log(err);
+      setError(err?.response?.data?.error);
     }
   };
 
@@ -92,7 +93,7 @@ const LoginPage = () => {
               required
             />
           </div>
-
+          <p className="text-danger">{error}</p>
           <button
             type="submit"
             className="btn btn-lg w-100 border-0 text-white fw-bold shadow-sm"

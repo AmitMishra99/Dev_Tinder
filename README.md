@@ -23,6 +23,8 @@
         Step - 12 : on root level do not forget to provide the <Provider></Provider>
         Step - 13 : dispatching the user Info into Redux Store 
         Step - 14 : Subscribing the store by using selector 
+        Step - 15 : Creating Your folders and files 
+              ---
 
 
         
