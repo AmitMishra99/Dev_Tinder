@@ -8,7 +8,7 @@ import { BASE_URL } from "../utils/constants";
 const LoginPage = () => {
   const brandColor = "#FF4B2B";
 
-  const [emailID, setemailID] = useState("webdev6@gmail.com");
+  const [emailID, setemailID] = useState("disha@gmail.com");
   const [password, setPassword] = useState("Amit@1234");
   const [error, setError] = useState("");
 
