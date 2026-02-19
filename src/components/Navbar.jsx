@@ -1,93 +1,125 @@
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../store/userSlice";
+import { removeFeed } from "../store/feedSlice";
 
 const Navbar = () => {
   const brandColor = "#FF4B2B";
-
   const user = useSelector((store) => store.user);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
   const handleLogout = async () => {
     try {
-      await axios.post(BASE_URL + "/logout", { withCredentials: true });
+      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
-      navigate("/login");
+      dispatch(removeFeed());
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-3">
-      <div className="container-fluid">
-        <a
-          className="navbar-brand fw-bold"
-          href="/"
-          style={{ color: brandColor, fontSize: "1.5rem" }}
+    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top py-2">
+      <div className="container">
+        {/* Brand Logo */}
+        <Link
+          className="navbar-brand fw-bold fs-3"
+          to="/feed"
+          style={{ color: brandColor, letterSpacing: "-1px" }}
         >
-          <span role="img" aria-label="flame">
-            🔥
-          </span>{" "}
           DevTinder
-        </a>
+        </Link>
 
+        {/* Mobile Toggle Button */}
         <button
-          className="navbar-toggler"
+          className="navbar-toggler border-0 shadow-none"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
+        {/* Navbar Links & Dropdown */}
         <div className="collapse navbar-collapse" id="navbarNav">
-          <div className="ms-auto d-flex align-items-center">
-            <div className="dropdown">
-              <div
-                className="d-flex align-items-center role-button"
-                style={{ cursor: "pointer" }}
+          <ul className="navbar-nav ms-auto align-items-center gap-2">
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold px-3" to="/feed">
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold px-3" to="/connections">
+                Connections
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold px-3" to="/messages">
+                Messages
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link fw-semibold px-3" to="/support">
+                Support
+              </Link>
+            </li>
+
+            {/* Profile Dropdown */}
+            <li className="nav-item dropdown ms-lg-3">
+              <a
+                className="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                href="#"
+                id="navbarDropdown"
+                role="button"
                 data-bs-toggle="dropdown"
+                aria-expanded="false"
               >
                 <img
-                  src={user?.photoURL}
-                  alt="profile"
+                  src={user?.photoURL || "https://i.pravatar.cc/100"}
+                  alt="User"
                   className="rounded-circle border"
-                  style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                  style={{ width: "35px", height: "35px", objectFit: "cover" }}
                 />
-                <span className="ms-2 fw-semibold text-dark">
-                  {" "}
-                  Hello , {user?.firstName}
-                </span>
-              </div>
-              <ul className="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                <span className="d-lg-none fw-semibold">Profile Settings</span>
+              </a>
+              <ul
+                className="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2"
+                aria-labelledby="navbarDropdown"
+                style={{ borderRadius: "15px" }}
+              >
                 <li>
-                  <a className="dropdown-item" href="/profile">
-                    Profile
-                  </a>
+                  <Link className="dropdown-item rounded-3 py-2" to="/profile">
+                    My Profile
+                  </Link>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/connections">
-                    Connections
-                  </a>
+                  <Link
+                    className="dropdown-item rounded-3 py-2"
+                    to="/profile/edit"
+                  >
+                    Edit Profile
+                  </Link>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <p
+                  <Link
                     onClick={handleLogout}
-                    className="dropdown-item text-danger"
+                    to="/"
+                    className="dropdown-item rounded-3 py-2 text-danger fw-bold"
                   >
                     Logout
-                  </p>
+                  </Link>
                 </li>
               </ul>
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>

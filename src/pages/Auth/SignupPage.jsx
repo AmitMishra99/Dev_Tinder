@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,10 @@ const SignupPage = () => {
   });
 
   const brandColor = "#FF4B2B";
+  const navigate = useNavigate();
+  const handleSignup = async () => {
+    
+  }
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,16 +36,25 @@ const SignupPage = () => {
         style={{ width: "100%", maxWidth: "450px", borderRadius: "15px" }}
       >
         <div className="text-center mb-4">
-          <h1 style={{ color: brandColor, fontWeight: "800", fontSize: "2.5rem" }}>
-            <span role="img" aria-label="flame">🔥</span> DevTinder
+          <h1
+            style={{ color: brandColor, fontWeight: "800", fontSize: "2.5rem" }}
+          >
+            <span role="img" aria-label="flame">
+              🔥
+            </span>{" "}
+            DevTinder
           </h1>
-          <p className="text-secondary fw-semibold">Create your developer profile</p>
+          <p className="text-secondary fw-semibold">
+            Create your developer profile
+          </p>
         </div>
 
         <form onSubmit={(e) => e.preventDefault()}>
           <div className="row">
             <div className="col-md-6 mb-3">
-              <label className="form-label text-uppercase fw-bold small text-muted">First Name</label>
+              <label className="form-label text-uppercase fw-bold small text-muted">
+                First Name
+              </label>
               <input
                 name="firstName"
                 type="text"
@@ -52,7 +66,9 @@ const SignupPage = () => {
               />
             </div>
             <div className="col-md-6 mb-3">
-              <label className="form-label text-uppercase fw-bold small text-muted">Last Name</label>
+              <label className="form-label text-uppercase fw-bold small text-muted">
+                Last Name
+              </label>
               <input
                 name="lastName"
                 type="text"
@@ -66,7 +82,9 @@ const SignupPage = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label text-uppercase fw-bold small text-muted">Email Address</label>
+            <label className="form-label text-uppercase fw-bold small text-muted">
+              Email Address
+            </label>
             <input
               name="email"
               type="email"
@@ -79,7 +97,9 @@ const SignupPage = () => {
           </div>
 
           <div className="mb-4">
-            <label className="form-label text-uppercase fw-bold small text-muted">Password</label>
+            <label className="form-label text-uppercase fw-bold small text-muted">
+              Password
+            </label>
             <input
               name="password"
               type="password"
@@ -106,7 +126,11 @@ const SignupPage = () => {
         <div className="mt-4 text-center">
           <p className="small text-muted mb-0">
             Already have an account?{" "}
-            <a href="/login" className="fw-bold text-decoration-none" style={{ color: brandColor }}>
+            <a
+              href="/login"
+              className="fw-bold text-decoration-none"
+              style={{ color: brandColor }}
+            >
               Sign In
             </a>
           </p>

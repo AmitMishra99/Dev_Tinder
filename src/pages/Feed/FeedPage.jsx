@@ -1,0 +1,67 @@
+import { useEffect } from "react";
+import axios from "axios";
+import { BASE_URL } from "../../utils/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { addFeed } from "../../store/feedSlice";
+import UserCard from "./UserCard";
+
+const Feed = () => {
+  const dispatch = useDispatch();
+  const feed = useSelector((store) => store.feed);
+
+  const getFeed = async () => {
+    if (feed && feed.length > 0) return;
+    try {
+      const res = await axios.get(BASE_URL + "/feed", {
+        withCredentials: true,
+      });
+      dispatch(addFeed(res.data.data));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getFeed();
+  }, []);
+
+  if (!feed || feed.length === 0) {
+    return (
+      <div className="text-center mt-5">
+        <h2 className="text-muted">No more profiles!</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="container py-5 d-flex justify-content-center align-items-center"
+      style={{ minHeight: "80vh" }}
+    >
+      {/* The Stack Container */}
+      <div
+        className="position-relative"
+        style={{ width: "350px", height: "600px" }}
+      >
+        {feed.map((user, index) => (
+          <div
+            key={user._id}
+            className="position-absolute top-0 start-0"
+            style={{
+              zIndex: feed.length - index, // Top of array = Top of stack
+              transform: `scale(${1 - index * 0.02}) translateY(${index * 10}px)`, // Visual "stack" effect
+              transition: "transform 0.3s ease",
+            }}
+          >
+            {/* Only allow interaction with the top card */}
+            <div style={{ pointerEvents: index === 0 ? "auto" : "none" }}>
+              <UserCard user={user} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Feed;

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addUser } from "../store/userSlice";
-import { BASE_URL } from "../utils/constants";
+import { addUser } from "../../store/userSlice";
+import { BASE_URL } from "../../utils/constants";
 
 const LoginPage = () => {
   const brandColor = "#FF4B2B";
@@ -109,13 +109,13 @@ const LoginPage = () => {
         <div className="mt-4 text-center">
           <p className="small text-muted mb-0">
             Don't have an account?{" "}
-            <a
-              href="/signup"
+            <Link
+              to="/signup"
               className="fw-bold text-decoration-none"
               style={{ color: brandColor }}
             >
               Join now
-            </a>
+            </Link>
           </p>
         </div>
       </div>

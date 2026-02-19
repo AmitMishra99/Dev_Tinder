@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 import { addUser } from "../../store/userSlice";
+import toast from 'react-hot-toast'
 
 const EditProfile = () => {
   const brandColor = "#FF4B2B";
@@ -46,27 +47,53 @@ const EditProfile = () => {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      const payload = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        age: user.age,
-        gender: user.gender,
-        about: user.about,
-        skills: user.skills ? user.skills.split(",").map((s) => s.trim()) : [],
-        photoURL: user.photoURL,
-      };
+const handleSave = async () => {
+  try {
+    const payload = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      age: user.age,
+      gender: user.gender,
+      about: user.about,
+      skills: user.skills ? user.skills.split(",").map((s) => s.trim()) : [],
+      photoURL: user.photoURL,
+    };
 
-      const res = await axios.patch(BASE_URL + "/profile/edit", payload, {
-        withCredentials: true,
-      });
-      dispatch(addUser(res.data.user));
-      navigate("/profile");
-    } catch (err) {
-      console.error("Profile update failed:", err);
-    }
-  };
+    const res = await axios.patch(BASE_URL + "/profile/edit", payload, {
+      withCredentials: true,
+    });
+
+    // Update Redux Store
+    dispatch(addUser(res.data.user));
+
+    // Success Notification
+    toast.success("Profile updated successfully!", {
+      duration: 3000,
+      icon: '✅',
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+    });
+
+    // Navigate back to profile
+    navigate("/profile");
+    
+  } catch (err) {
+    console.error("Profile update failed:", err);
+    
+    // Error Notification
+    toast.error(err?.response?.data || "Failed to update profile", {
+      duration: 4000,
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+    });
+  }
+};
 
   return (
     <div

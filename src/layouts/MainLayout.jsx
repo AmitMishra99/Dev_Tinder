@@ -1,13 +1,19 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/userSlice";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
-const Body = () => {
+const MainLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const hideLayout =
+    pathname === "/" || pathname === "/login" || pathname === "/signup";
 
   const fetchUser = async () => {
     try {
@@ -26,10 +32,12 @@ const Body = () => {
   }, []);
 
   return (
-    <div>
+    <>
+      {!hideLayout && <Navbar />}
       <Outlet />
-    </div>
+      {!hideLayout && <Footer />}
+    </>
   );
 };
 
-export default Body;
+export default MainLayout;
