@@ -13,6 +13,7 @@ const SignupPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const brandColor = "#FF4B2B";
   const navigate = useNavigate();
@@ -133,15 +134,24 @@ const SignupPage = () => {
             <label className="form-label text-uppercase fw-bold small text-muted">
               Password
             </label>
-            <input
-              name="password"
-              type="password"
-              className="form-control bg-light border-0"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              required
-            />
+            <div className="input-group">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                className="form-control form-control-lg bg-light border-0"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                className="btn btn-light border-0"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
 
           {/* 🟡 loader added */}
