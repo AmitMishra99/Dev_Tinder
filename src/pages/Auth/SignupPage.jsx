@@ -1,19 +1,45 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../utils/constants";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
+    emailID: "",
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const brandColor = "#FF4B2B";
   const navigate = useNavigate();
-  const handleSignup = async () => {
-    
-  }
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const { firstName, lastName, emailID, password } = formData;
+
+    try {
+      await axios.post(
+        BASE_URL + "/signup",
+        { firstName, lastName, emailID, password },
+        { withCredentials: true },
+      );
+
+      navigate("/login");
+    } catch (err) {
+      setError(
+        err?.response?.data?.error || "Signup failed. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,7 +75,13 @@ const SignupPage = () => {
           </p>
         </div>
 
-        <form onSubmit={(e) => e.preventDefault()}>
+        {/* 🔴 error message */}
+        {error && (
+          <p className="text-danger text-center fw-semibold">{error}</p>
+        )}
+
+        {/* ✅ connect form submit */}
+        <form onSubmit={handleSignup}>
           <div className="row">
             <div className="col-md-6 mb-3">
               <label className="form-label text-uppercase fw-bold small text-muted">
@@ -65,6 +97,7 @@ const SignupPage = () => {
                 required
               />
             </div>
+
             <div className="col-md-6 mb-3">
               <label className="form-label text-uppercase fw-bold small text-muted">
                 Last Name
@@ -83,13 +116,13 @@ const SignupPage = () => {
 
           <div className="mb-3">
             <label className="form-label text-uppercase fw-bold small text-muted">
-              Email Address
+              emailID Address
             </label>
             <input
-              name="email"
-              type="email"
+              name="emailID"
+              type="emailID"
               className="form-control bg-light border-0"
-              value={formData.email}
+              value={formData.emailID}
               onChange={handleChange}
               placeholder="john@example.com"
               required
@@ -111,28 +144,31 @@ const SignupPage = () => {
             />
           </div>
 
+          {/* 🟡 loader added */}
           <button
             type="submit"
+            disabled={loading}
             className="btn btn-lg w-100 border-0 text-white fw-bold shadow-sm"
             style={{
               background: `linear-gradient(45deg, ${brandColor}, #FF416C)`,
               borderRadius: "10px",
             }}
           >
-            Create Account
+            {loading ? "Creating account..." : "Create Account"}
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <p className="small text-muted mb-0">
             Already have an account?{" "}
-            <a
-              href="/login"
+            <span
+              role="button"
+              onClick={() => navigate("/login")}
               className="fw-bold text-decoration-none"
               style={{ color: brandColor }}
             >
               Sign In
-            </a>
+            </span>
           </p>
         </div>
       </div>

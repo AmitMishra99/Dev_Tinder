@@ -8,28 +8,36 @@ import { BASE_URL } from "../../utils/constants";
 const LoginPage = () => {
   const brandColor = "#FF4B2B";
 
-  const [emailID, setemailID] = useState("disha@gmail.com");
-  const [password, setPassword] = useState("Amit@1234");
+  const [emailID, setEmailID] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
       const res = await axios.post(
         BASE_URL + "/login",
-        {
-          emailID,
-          password,
-        },
+        { emailID, password },
         { withCredentials: true },
       );
+
       dispatch(addUser(res.data.user));
       navigate("/feed");
     } catch (err) {
-      setError(err?.response?.data?.error);
+      setError(
+        err?.response?.data?.error ||
+          "Unable to login. Please check your connection.",
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,12 +59,9 @@ const LoginPage = () => {
       >
         <div className="text-center mb-4">
           <h1
-            style={{ color: brandColor, fontWeight: "800", fontSize: "2.5rem" }}
+            style={{ color: brandColor, fontWeight: 800, fontSize: "2.5rem" }}
           >
-            <span role="img" aria-label="flame">
-              🔥
-            </span>{" "}
-            DevTinder
+            🔥 DevTinder
           </h1>
           <p className="text-secondary fw-semibold">
             Find your coding soulmate.
@@ -69,11 +74,11 @@ const LoginPage = () => {
               Email Address
             </label>
             <input
+              name="emailID"
               type="email"
               className="form-control form-control-lg bg-light border-0"
-              style={{ fontSize: "1rem" }}
               value={emailID}
-              onChange={(e) => setemailID(e.target.value)}
+              onChange={(e) => setEmailID(e.target.value)}
               placeholder="name@example.com"
               required
             />
@@ -83,32 +88,48 @@ const LoginPage = () => {
             <label className="form-label text-uppercase fw-bold small text-muted">
               Password
             </label>
-            <input
-              type="password"
-              className="form-control form-control-lg bg-light border-0"
-              style={{ fontSize: "1rem" }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
+            <div className="input-group">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control form-control-lg bg-light border-0"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                className="btn btn-light border-0"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </div>
-          <p className="text-danger">{error}</p>
+
+          {error && (
+            <p className="text-danger small mb-3" role="alert">
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
+            disabled={loading}
             className="btn btn-lg w-100 border-0 text-white fw-bold shadow-sm"
             style={{
               background: `linear-gradient(45deg, ${brandColor}, #FF416C)`,
               borderRadius: "10px",
+              opacity: loading ? 0.8 : 1,
             }}
           >
-            Sign In
+            {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <p className="small text-muted mb-0">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               to="/signup"
               className="fw-bold text-decoration-none"
