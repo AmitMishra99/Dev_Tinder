@@ -30,7 +30,7 @@ const LoginPage = () => {
       );
 
       dispatch(addUser(res.data.user));
-      navigate("/feed");
+      navigate("/profile/edit");
     } catch (err) {
       setError(
         err?.response?.data?.error ||
