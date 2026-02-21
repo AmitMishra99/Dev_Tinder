@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import Loading from "../../pages/Loader/LoaderPage";
+import LoaderPage from "../../pages/Loader/LoaderPage";
 
 const Profile = () => {
   const brandColor = "#FF4B2B";
@@ -9,7 +9,7 @@ const Profile = () => {
   if (!user) {
     return (
       <>
-        <Loading text="Loading profile..." />
+        <LoaderPage text="Loading profile..." />
       </>
     );
   }

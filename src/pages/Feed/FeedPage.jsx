@@ -1,16 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed, removeFeed } from "../../store/feedSlice";
 import UserCard from "./UserCard";
+import LoaderPage from "../Loader/LoaderPage";
 
 const Feed = () => {
   const dispatch = useDispatch();
   const feed = useSelector((store) => store.feed);
 
+  const [loading, setLoading] = useState(true);
+
   const getFeed = async () => {
-    if (feed && feed.length > 0) return;
     try {
       const res = await axios.get(BASE_URL + "/feed", {
         withCredentials: true,
@@ -18,12 +20,23 @@ const Feed = () => {
       dispatch(addFeed(res.data.data));
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getFeed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (loading) {
+    return (
+      <>
+        <LoaderPage text={"Loading Profiles...."} />
+      </>
+    );
+  }
 
   if (!feed || feed.length === 0) {
     return (
@@ -53,7 +66,7 @@ const Feed = () => {
               transition: "all 0.3s ease",
             }}
           >
-            {/* Only the top card (index 0) can be clicked */}
+            {/* Only top card clickable */}
             <div style={{ pointerEvents: index === 0 ? "auto" : "none" }}>
               <UserCard
                 user={user}

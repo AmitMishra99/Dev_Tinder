@@ -5,7 +5,6 @@ import { BASE_URL, defaultPhoto } from "../utils/constants";
 import { removeUser } from "../store/userSlice";
 import { clearFeed } from "../store/feedSlice";
 import { clearConnections } from "../store/connectionsSlice";
-import { clearRequests } from "../store/requestsSlice";
 
 const Navbar = () => {
   const brandColor = "#FF4B2B";
@@ -21,7 +20,6 @@ const Navbar = () => {
       dispatch(removeUser());
       dispatch(clearFeed());
       dispatch(clearConnections());
-      dispatch(clearRequests());
       navigate("/");
     } catch (err) {
       console.log(err);

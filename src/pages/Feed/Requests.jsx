@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 import toast from "react-hot-toast";
+import LoaderPage from "../Loader/LoaderPage";
 
 const Requests = () => {
   const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchRequests = async () => {
     try {
@@ -14,6 +16,8 @@ const Requests = () => {
       setRequests(res.data.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,7 +32,9 @@ const Requests = () => {
         {},
         { withCredentials: true },
       );
-      setRequests(requests.filter((req) => req._id !== requestId));
+
+      setRequests((prev) => prev.filter((req) => req._id !== requestId));
+
       toast.success(
         `Request ${status === "accepted" ? "Accepted" : "Rejected"}`,
       );
@@ -37,6 +43,14 @@ const Requests = () => {
       toast.error("Review failed");
     }
   };
+
+  if (loading) {
+    return (
+      <>
+        <LoaderPage text={"Loading requests..."} />
+      </>
+    );
+  }
 
   if (requests.length === 0) {
     return (
@@ -54,6 +68,7 @@ const Requests = () => {
       <h2 className="fw-bold mb-4 text-center">
         Pending Requests ({requests.length})
       </h2>
+
       <div className="row justify-content-center">
         <div className="col-md-8 col-lg-6">
           {requests.map((request) => (
@@ -66,24 +81,35 @@ const Requests = () => {
                 <img
                   src={request.senderID.photoURL}
                   className="rounded-circle"
-                  style={{ width: "80px", height: "80px", objectFit: "cover" }}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                  }}
                   alt="from user"
                 />
+
                 <div className="flex-grow-1">
                   <h5 className="fw-bold mb-1">
                     {request.senderID.firstName} {request.senderID.lastName}
                   </h5>
+
                   <p className="small text-muted mb-3">
                     {request.senderID.about || "Interested in your profile!"}
                   </p>
+
                   <div className="d-flex gap-2">
                     <button
                       onClick={() => reviewRequest("accepted", request._id)}
                       className="btn text-white flex-grow-1 fw-bold"
-                      style={{ background: "#2ecc71", borderRadius: "10px" }}
+                      style={{
+                        background: "#2ecc71",
+                        borderRadius: "10px",
+                      }}
                     >
                       Accept
                     </button>
+
                     <button
                       onClick={() => reviewRequest("rejected", request._id)}
                       className="btn btn-light border flex-grow-1 fw-bold"

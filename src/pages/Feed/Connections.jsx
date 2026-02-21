@@ -1,34 +1,40 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../utils/constants";
+import { BASE_URL, defaultPhoto } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../../store/connectionsSlice";
-import { addRequests } from "../../store/requestsSlice";
+import LoaderPage from "../Loader/LoaderPage";
 
 const Connections = () => {
-  const [connections, setConnections] = useState([]);
-  const [requestCount, setRequestCount] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const brandColor = "#FF4B2B";
 
+  const connections = useSelector((store) => store.connections);
+
+  const [loading, setLoading] = useState(true);
+  const [requestCount, setRequestCount] = useState(0);
+
   const fetchData = async () => {
     try {
+      setLoading(true); // ✅ CHANGE 3: Start loader before API call
       const connRes = await axios.get(BASE_URL + "/user/connections", {
         withCredentials: true,
       });
+
       const reqRes = await axios.get(BASE_URL + "/user/requests", {
         withCredentials: true,
       });
 
-      setConnections(connRes.data.data);
       dispatch(addConnections(connRes.data.data));
       setRequestCount(reqRes.data.data.length);
-      dispatch(addRequests(reqRes.data.data));
     } catch (err) {
       console.error("Error fetching data:", err);
+      toast.error("Failed to load connections");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,26 +42,17 @@ const Connections = () => {
     fetchData();
   }, []);
 
-  const handleRemove = async (userId) => {
-    try {
-      await axios.post(
-        BASE_URL + "/request/send/ignored/" + userId,
-        {},
-        { withCredentials: true },
-      );
-      setConnections(connections.filter((c) => c._id !== userId));
-      toast.success("Connection removed");
-    } catch (err) {
-      console.log(err);
-      toast.error("Failed to remove connection");
-    }
-  };
+  if (loading) {
+    return (
+      <>
+        <LoaderPage text="Loading connections..." />
+      </>
+    );
+  }
 
   return (
     <div className="container py-5" style={{ maxWidth: "800px" }}>
-      {" "}
-      {/* Added maxWidth for better list look */}
-      {/* Header Section */}
+      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="fw-bold mb-0">Connections</h2>
 
@@ -75,7 +72,7 @@ const Connections = () => {
           )}
         </button>
       </div>
-      {/* Connection List - Single Column */}
+
       <div className="row g-3">
         {connections.length === 0 ? (
           <div className="text-center py-5 border rounded-4 bg-light">
@@ -84,36 +81,33 @@ const Connections = () => {
         ) : (
           connections.map((user) => (
             <div key={user._id} className="col-12">
-              {" "}
-              {/* Forces one card per row */}
               <div
                 className="card border-0 shadow-sm p-3"
                 style={{ borderRadius: "15px" }}
               >
                 <div className="d-flex align-items-center justify-content-between">
-                  <div className="d-flex align-items-center gap-3 overflow-hidden">
+                  <div className="d-flex align-items-center gap-3">
                     <img
-                      src={user.photoURL || "https://i.pravatar.cc/100"}
+                      src={user.photoURL || defaultPhoto}
                       className="rounded-circle border"
                       style={{
                         width: "60px",
                         height: "60px",
                         objectFit: "cover",
-                        flexShrink: 0,
                       }}
                       alt="user"
                     />
-                    <div className="text-truncate">
-                      <h6 className="fw-bold mb-0 text-truncate">
+                    <div>
+                      <h6 className="fw-bold mb-0">
                         {user.firstName} {user.lastName}
                       </h6>
-                      <p className="text-muted small mb-0 text-truncate">
+                      <p className="text-muted small mb-0">
                         {user.about || "Developer"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="d-flex gap-2 ms-3">
+                  <div className="d-flex gap-2">
                     <button
                       onClick={() => navigate("/messages")}
                       className="btn btn-sm text-white px-3 rounded-pill"
@@ -121,10 +115,7 @@ const Connections = () => {
                     >
                       Message
                     </button>
-                    <button
-                      onClick={() => handleRemove(user._id)}
-                      className="btn btn-sm btn-outline-light text-dark border px-3 rounded-pill"
-                    >
+                    <button className="btn btn-sm btn-outline-dark px-3 rounded-pill">
                       Remove
                     </button>
                   </div>
