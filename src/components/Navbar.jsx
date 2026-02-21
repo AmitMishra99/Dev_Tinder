@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { BASE_URL } from "../utils/constants";
+import { BASE_URL, defaultPhoto } from "../utils/constants";
 import { removeUser } from "../store/userSlice";
 import { clearFeed } from "../store/feedSlice";
 import { clearConnections } from "../store/connectionsSlice";
@@ -88,7 +88,7 @@ const Navbar = () => {
                 aria-expanded="false"
               >
                 <img
-                  src={user?.photoURL || "https://i.pravatar.cc/100"}
+                  src={user?.photoURL || defaultPhoto}
                   alt="User"
                   className="rounded-circle border"
                   style={{ width: "35px", height: "35px", objectFit: "cover" }}

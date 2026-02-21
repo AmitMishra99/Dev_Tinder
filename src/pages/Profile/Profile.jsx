@@ -1,13 +1,18 @@
-import React from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import Loading from "../../pages/Loader/LoaderPage";
 
 const Profile = () => {
   const brandColor = "#FF4B2B";
-  const navigate = useNavigate();
   const user = useSelector((store) => store.user);
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <>
+        <Loading text="Loading profile..." />
+      </>
+    );
+  }
 
   // Helper to safely handle skills display
   const renderSkills = () => {
@@ -56,7 +61,7 @@ const Profile = () => {
             {user.firstName} {user.lastName}
           </h2>
           <p className="text-muted mb-3">
-            {user.age || "??"} years old •{" "}
+            {user.age ?? "??"} Years Old •{" "}
             {user.gender
               ? user.gender.charAt(0).toUpperCase() + user.gender.slice(1)
               : "N/A"}
@@ -80,8 +85,8 @@ const Profile = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => navigate("/profile/edit")}
+          <Link
+            to={"/profile/edit"}
             className="btn btn-lg w-100 text-white fw-bold shadow"
             style={{
               background: `linear-gradient(45deg, ${brandColor}, #FF416C)`,
@@ -89,7 +94,7 @@ const Profile = () => {
             }}
           >
             Edit Profile
-          </button>
+          </Link>
         </div>
       </div>
     </div>
