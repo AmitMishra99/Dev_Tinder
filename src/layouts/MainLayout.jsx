@@ -23,20 +23,22 @@ const MainLayout = () => {
       dispatch(addUser(res.data.user));
     } catch (err) {
       navigate("/login");
-      console.log(err.status);
+      console.log(err.response?.status);
     }
   };
 
   useEffect(() => {
-    fetchUser();
-  }, []);
+    if (!hideLayout) {
+      fetchUser();
+    }
+  }, [pathname]);
 
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       {!hideLayout && <Navbar />}
       <Outlet />
       {!hideLayout && <Footer />}
-    </>
+    </div>
   );
 };
 

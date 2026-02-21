@@ -1,20 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../store/userSlice";
-import { removeFeed } from "../store/feedSlice";
+import { clearFeed } from "../store/feedSlice";
+import { clearConnections } from "../store/connectionsSlice";
+import { clearRequests } from "../store/requestsSlice";
 
 const Navbar = () => {
   const brandColor = "#FF4B2B";
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  if (!user) return null;
 
   const handleLogout = async () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
-      dispatch(removeFeed());
+      dispatch(clearFeed());
+      dispatch(clearConnections());
+      dispatch(clearRequests());
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
@@ -109,13 +117,13 @@ const Navbar = () => {
                   <hr className="dropdown-divider" />
                 </li>
                 <li>
-                  <Link
+                  <button
                     onClick={handleLogout}
                     to="/"
                     className="dropdown-item rounded-3 py-2 text-danger fw-bold"
                   >
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </li>

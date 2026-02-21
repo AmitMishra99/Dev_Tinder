@@ -12,7 +12,6 @@ const Requests = () => {
       const res = await axios.get(BASE_URL + "/user/requests", {
         withCredentials: true,
       });
-      console.log(res.data.data);
       setRequests(res.data.data);
     } catch (err) {
       console.error(err);
@@ -35,6 +34,7 @@ const Requests = () => {
         `Request ${status === "accepted" ? "Accepted" : "Rejected"}`,
       );
     } catch (err) {
+      console.log(err);
       toast.error("Review failed");
     }
   };
