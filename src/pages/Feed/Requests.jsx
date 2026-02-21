@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 
 const Requests = () => {
   const [requests, setRequests] = useState([]);
-  const brandColor = "#FF4B2B";
 
   const fetchRequests = async () => {
     try {
