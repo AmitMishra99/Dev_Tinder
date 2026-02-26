@@ -34,7 +34,7 @@ const ErrorPage = () => {
 
         <div className="d-grid gap-3">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/feed")}
             className="btn btn-lg text-white fw-bold shadow-sm"
             style={{
               background: `linear-gradient(45deg, ${brandColor}, #FF416C)`,
