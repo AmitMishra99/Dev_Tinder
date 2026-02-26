@@ -31,7 +31,7 @@ const SignupPage = () => {
         { firstName, lastName, emailID, password },
         { withCredentials: true },
       );
-
+      
       navigate("/login");
     } catch (err) {
       setError(
@@ -76,12 +76,10 @@ const SignupPage = () => {
           </p>
         </div>
 
-        {/* 🔴 error message */}
         {error && (
           <p className="text-danger text-center fw-semibold">{error}</p>
         )}
 
-        {/* ✅ connect form submit */}
         <form onSubmit={handleSignup}>
           <div className="row">
             <div className="col-md-6 mb-3">
@@ -154,7 +152,6 @@ const SignupPage = () => {
             </div>
           </div>
 
-          {/* 🟡 loader added */}
           <button
             type="submit"
             disabled={loading}
