@@ -15,7 +15,7 @@ import EditProfile from "../pages/Profile/EditProfile";
 import Connections from "../pages/Feed/Connections";
 import Requests from "../pages/Feed/Requests";
 import Support from "../pages/Support/Support";
-import Messages from "../pages/Message/Messages";
+import Chat from "../pages/Message/Chat";
 import ErrorPage from "../pages/Error/ErrorPage";
 
 const App = () => {
@@ -36,7 +36,7 @@ const App = () => {
             <Route path="/profile/edit" element={<EditProfile />} />
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<Requests />} />
-            <Route path="/messages" element={<Messages />} />
+            <Route path="/chat/:targetID" element={<Chat />} />
             <Route path="/support" element={<Support />} />
           </Route>
 
