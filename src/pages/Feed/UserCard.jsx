@@ -16,69 +16,114 @@ const UserCard = ({ user, onReview }) => {
         {},
         { withCredentials: true },
       );
-      console.log(res);
 
-      toast.success(status === "interested" ? "Interested!" : "Ignored");
+      if (status === "interested") {
+        toast.success("Interested!", {
+          icon: <i className="fa-solid fa-heart" style={{ color: "#fff" }}></i>,
+          style: {
+            borderRadius: "15px",
+            background: brandColor,
+            color: "#fff",
+            fontWeight: "bold",
+          },
+        });
+      } else {
+        toast("Ignored", {
+          icon: <i className="fa-solid fa-xmark" style={{ color: "#fff" }}></i>,
+          style: {
+            borderRadius: "15px",
+            background: "#333",
+            color: "#fff",
+          },
+        });
+      }
 
-      // Tell the Feed component to remove this card
       if (onReview) onReview(_id);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Action failed");
+      toast.error(err?.response?.data?.message || "Action failed", {
+        icon: <i className="fa-solid fa-triangle-exclamation"></i>,
+        style: {
+          borderRadius: "15px",
+          background: "#dc3545",
+          color: "#fff",
+        },
+      });
     }
   };
 
   return (
     <div
-      className="card border-0 shadow-lg overflow-hidden"
+      className="card border-0 shadow-lg overflow-hidden mx-auto"
       style={{
-        borderRadius: "20px",
-        width: "350px",
-        height: "600px",
+        borderRadius: "24px",
+        maxWidth: "380px",
+        width: "100%",
+        minHeight: "620px",
         background: "#fff",
       }}
     >
-      <div style={{ height: "350px", width: "100%", overflow: "hidden" }}>
+      {/* IMAGE SECTION */}
+      <div
+        style={{
+          height: "380px",
+          width: "100%",
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
         <img
           src={photoURL || defaultPhoto}
           className="w-100 h-100"
           style={{ objectFit: "cover" }}
           alt="profile"
         />
+        <div
+          className="position-absolute bottom-0 start-0 m-3 px-3 py-1 rounded-pill text-white small fw-bold"
+          style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)" }}
+        >
+          <i
+            className={`fa-solid ${gender === "male" ? "fa-mars" : gender === "female" ? "fa-venus" : "fa-genderless"} me-1`}
+          ></i>
+          {gender}
+        </div>
       </div>
 
-      <div className="card-body d-flex flex-column p-3 text-start">
-        <h4 className="fw-bold mb-0">
+      <div className="card-body d-flex flex-column p-4 text-start">
+        <h3 className="fw-bold mb-1">
           {firstName} {lastName}, {age}
-        </h4>
-        <p className="text-muted small mb-2">{gender}</p>
+        </h3>
+
         <p
-          className="text-secondary small mb-3"
-          style={{ height: "45px", overflow: "hidden" }}
+          className="text-secondary small mb-3 flex-grow-1"
+          style={{ fontSize: "0.95rem", lineHeight: "1.4" }}
         >
-          {about}
+          {about || "No bio available."}
         </p>
 
-        <div className="d-flex flex-wrap gap-1 mb-auto">
-          {skills?.slice(0, 5).map((s, i) => (
-            <span key={i} className="badge bg-light text-dark border fw-normal">
-              {s}
+        <div className="d-flex flex-wrap gap-2 mb-4">
+          {skills?.slice(0, 4).map((s, i) => (
+            <span
+              key={i}
+              className="badge bg-light text-muted border-0 py-2 px-3 fw-normal rounded-pill"
+            >
+              <i className="fa-solid fa-code me-1 small"></i> {s}
             </span>
           ))}
         </div>
 
-        <div className="d-flex gap-2 border-top pt-3">
+        <div className="d-flex gap-3 border-top pt-4">
           <button
             onClick={() => handleAction("ignored")}
-            className="btn btn-outline-secondary flex-grow-1 rounded-pill"
+            className="btn btn-light flex-grow-1 rounded-pill py-2 fw-bold text-muted border shadow-sm btn-hover-scale"
           >
-            Ignore
+            <i className="fa-solid fa-xmark me-2"></i> Ignore
           </button>
           <button
             onClick={() => handleAction("interested")}
-            className="btn text-white flex-grow-1 rounded-pill shadow"
+            className="btn text-white flex-grow-1 rounded-pill py-2 fw-bold shadow btn-hover-scale"
             style={{ background: brandColor }}
           >
-            Interested
+            <i className="fa-solid fa-heart me-2"></i> Interested
           </button>
         </div>
       </div>

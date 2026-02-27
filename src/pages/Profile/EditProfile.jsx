@@ -1,251 +1,206 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { BASE_URL, defaultPhoto } from "../../utils/constants";
+import { BASE_URL } from "../../utils/constants";
 import { addUser } from "../../store/userSlice";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
-  const brandColor = "#FF4B2B";
-  const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const brandColor = "#FF4B2B";
 
-  const reduxUser = useSelector((store) => store.user);
-
-  const formatSkillsForInput = (skills) => {
-    if (!skills) return "";
-    return Array.isArray(skills) ? skills.join(", ") : skills;
-  };
-
-  const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
-    photoURL: defaultPhoto,
-    about: "",
-    skills: "",
-    gender: "other",
-    age: "",
+  const [formData, setFormData] = useState({
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    photoURL: user?.photoURL || "",
+    about: user?.about || "",
+    age: user?.age || "",
+    gender: user?.gender || "male",
+    skills: Array.isArray(user?.skills)
+      ? user.skills.join(", ")
+      : user?.skills || "",
   });
 
-  useEffect(() => {
-    if (!reduxUser) return;
-    setUser({
-      firstName: reduxUser.firstName ?? "",
-      lastName: reduxUser.lastName ?? "",
-      photoURL: reduxUser.photoURL ?? defaultPhoto,
-      about: reduxUser.about ?? "",
-      skills: formatSkillsForInput(reduxUser.skills),
-      gender: reduxUser.gender ?? "other",
-      age: reduxUser.age ?? "",
-    });
-  }, [reduxUser]);
-
-  const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
     try {
-      setError("");
-      setLoading(true);
+      const res = await axios.patch(
+        BASE_URL + "/profile/edit",
+        {
+          ...formData,
+          skills: formData.skills.split(",").map((s) => s.trim()),
+        },
+        { withCredentials: true },
+      );
 
-      const payload = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        age: user.age,
-        gender: user.gender,
-        about: user.about,
-        skills: user.skills ? user.skills.split(",").map((s) => s.trim()) : [],
-        photoURL: user.photoURL,
-      };
-
-      const res = await axios.patch(BASE_URL + "/profile/edit", payload, {
-        withCredentials: true,
-      });
-
-      dispatch(addUser(res.data.user));
-      toast.success("Profile updated successfully!");
+      dispatch(addUser(res.data.data));
+      toast.success("Profile updated!");
       navigate("/feed");
     } catch (err) {
-      const msg = err?.response?.data?.error || "Internal Server Error";
-
-      setError(msg);
-      toast.error("Failed to update Profile");
-    } finally {
-      setLoading(false);
+      toast.error(err?.response?.data || "Something went wrong");
     }
   };
 
   return (
     <div
-      style={{
-        minHeight: "calc(100vh - 80px)",
-        background: "#F8F9FA",
-        padding: "40px 20px",
-      }}
+      className="container d-flex justify-content-center align-items-center py-5"
+      style={{ minHeight: "80vh" }}
     >
-      <div className="container" style={{ maxWidth: "1000px" }}>
-        <div className="d-flex align-items-center mb-4 gap-3">
-          <button
-            className="btn btn-light rounded-circle shadow-sm"
-            onClick={() => navigate("/profile")}
-          >
-            🔙
-          </button>
-          <h2 className="fw-bold mb-0">Update Profile</h2>
-        </div>
+      <div className="col-12 col-lg-7">
+        <div
+          className="card border-0 shadow-lg p-4 p-md-5"
+          style={{ borderRadius: "28px" }}
+        >
+          <div className="text-center mb-4">
+            <div
+              className="d-inline-flex align-items-center justify-content-center mb-3 shadow-sm"
+              style={{
+                width: "60px",
+                height: "60px",
+                borderRadius: "18px",
+                background: `${brandColor}15`,
+              }}
+            >
+              <i
+                className="fa-solid fa-user-gear fs-3"
+                style={{ color: brandColor }}
+              ></i>
+            </div>
+            <h2 className="fw-black mb-1">Edit Profile</h2>
+            <p className="text-muted small fw-bold text-uppercase">
+              Update your developer persona
+            </p>
+          </div>
 
-        <div className="row g-4">
-          {/* FORM */}
-          <div className="col-lg-7">
-            <div className="card border-0 shadow-sm p-4">
-              <div className="row g-3 mb-3">
-                <div className="col-md-6">
-                  <label className="form-label small fw-bold text-muted">
-                    FIRST NAME
-                  </label>
-                  <input
-                    name="firstName"
-                    type="text"
-                    className="form-control"
-                    value={user.firstName}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label small fw-bold text-muted">
-                    LAST NAME
-                  </label>
-                  <input
-                    name="lastName"
-                    type="text"
-                    className="form-control"
-                    value={user.lastName}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="row g-3 mb-3">
-                <div className="col-md-6">
-                  <label className="form-label small fw-bold text-muted">
-                    AGE
-                  </label>
-                  <input
-                    name="age"
-                    type="number"
-                    className="form-control"
-                    value={user.age}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="form-label small fw-bold text-muted">
-                    GENDER
-                  </label>
-                  <select
-                    name="gender"
-                    className="form-select"
-                    value={user.gender}
-                    onChange={handleChange}
-                  >
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* PHOTO URL INPUT */}
-              <div className="mb-3">
-                <label className="form-label small fw-bold text-muted">
-                  PROFILE PHOTO URL
+          <form onSubmit={handleSave}>
+            <div className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label small fw-bold text-muted text-uppercase">
+                  First Name
                 </label>
                 <input
-                  name="photoURL"
                   type="text"
-                  className="form-control"
-                  placeholder="https://example.com/photo.jpg"
-                  value={user.photoURL}
-                  onChange={handleChange}
+                  className="form-control border-0 bg-light py-2 fw-semibold"
+                  style={{ borderRadius: "12px" }}
+                  value={formData.firstName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, firstName: e.target.value })
+                  }
+                  required
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="form-label small fw-bold text-muted">
-                  SKILLS (comma separated)
+              <div className="col-md-6">
+                <label className="form-label small fw-bold text-muted text-uppercase">
+                  Last Name
                 </label>
                 <input
-                  name="skills"
                   type="text"
-                  className="form-control"
-                  value={user.skills}
-                  onChange={handleChange}
+                  className="form-control border-0 bg-light py-2 fw-semibold"
+                  style={{ borderRadius: "12px" }}
+                  value={formData.lastName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lastName: e.target.value })
+                  }
+                  required
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="form-label small fw-bold text-muted">
-                  ABOUT
+              <div className="col-12">
+                <label className="form-label small fw-bold text-muted text-uppercase">
+                  Photo URL
+                </label>
+                <input
+                  type="text"
+                  className="form-control border-0 bg-light py-2 fw-semibold"
+                  style={{ borderRadius: "12px" }}
+                  value={formData.photoURL}
+                  onChange={(e) =>
+                    setFormData({ ...formData, photoURL: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label small fw-bold text-muted text-uppercase">
+                  Age
+                </label>
+                <input
+                  type="number"
+                  className="form-control border-0 bg-light py-2 fw-semibold"
+                  style={{ borderRadius: "12px" }}
+                  value={formData.age}
+                  onChange={(e) =>
+                    setFormData({ ...formData, age: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label small fw-bold text-muted text-uppercase">
+                  Gender
+                </label>
+                <select
+                  className="form-select border-0 bg-light py-2 fw-semibold"
+                  style={{ borderRadius: "12px" }}
+                  value={formData.gender}
+                  onChange={(e) =>
+                    setFormData({ ...formData, gender: e.target.value })
+                  }
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="col-12">
+                <label className="form-label small fw-bold text-muted text-uppercase">
+                  Skills (Comma separated)
+                </label>
+                <input
+                  type="text"
+                  className="form-control border-0 bg-light py-2 fw-semibold"
+                  style={{ borderRadius: "12px" }}
+                  placeholder="React, Node, MongoDB..."
+                  value={formData.skills}
+                  onChange={(e) =>
+                    setFormData({ ...formData, skills: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="col-12">
+                <label className="form-label small fw-bold text-muted text-uppercase">
+                  About
                 </label>
                 <textarea
-                  name="about"
-                  className="form-control"
-                  rows="4"
-                  value={user.about}
-                  onChange={handleChange}
-                />
-              </div>
-              {error && (
-                <div className="alert alert-danger text-center">{error}</div>
-              )}
-              <div className="d-flex gap-3">
-                <button
-                  className="btn btn-light w-50 fw-bold"
-                  onClick={() => navigate("/profile")}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  disabled={loading}
-                  className="btn w-50 text-white fw-bold"
-                  style={{ background: brandColor }}
-                  onClick={handleSave}
-                >
-                  {loading ? "Saving..." : "Save Changes"}
-                </button>
+                  className="form-control border-0 bg-light py-2 fw-semibold"
+                  style={{ borderRadius: "12px" }}
+                  rows="3"
+                  value={formData.about}
+                  onChange={(e) =>
+                    setFormData({ ...formData, about: e.target.value })
+                  }
+                ></textarea>
               </div>
             </div>
-          </div>
 
-          {/* PREVIEW */}
-          <div className="col-lg-5 ">
-            <div className="card border-0 shadow-sm text-center p-4">
-              <h6 className="text-muted small fw-bold text-uppercase mb-3">
-                Preview
-              </h6>
-              <img
-                src={user.photoURL}
-                alt="Preview"
-                className="rounded-circle border mb-3 mx-auto d-block"
-                style={{
-                  width: "120px",
-                  height: "120px",
-                  objectFit: "cover",
-                }}
-              />
-              <h4 className="fw-bold mb-1">
-                {user.firstName} {user.lastName}
-              </h4>
-              <p className="text-secondary small">
-                {user.age} years • {user.gender}
-              </p>
-            </div>
-          </div>
+            <button
+              type="submit"
+              className="btn btn-lg w-100 text-white fw-black mt-4 shadow-sm border-0"
+              style={{
+                background: brandColor,
+                borderRadius: "15px",
+                padding: "12px",
+              }}
+            >
+              Save Changes
+            </button>
+          </form>
         </div>
       </div>
     </div>
