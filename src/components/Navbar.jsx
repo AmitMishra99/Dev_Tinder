@@ -12,12 +12,21 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const closeOffcanvas = () => {
+    const menu = document.getElementById("mobileMenu");
+    if (menu) {
+      const bsOffcanvas = window.bootstrap?.Offcanvas.getInstance(menu);
+      bsOffcanvas?.hide();
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
       dispatch(clearFeed());
       dispatch(clearConnections());
+      closeOffcanvas();
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -27,15 +36,22 @@ const Navbar = () => {
   if (!user) return null;
 
   return (
-    <nav className="navbar navbar-expand-lg border-bottom sticky-top py-2 bg-body-tertiary">
+    <nav className="navbar navbar-expand-lg border-bottom sticky-top py-2 bg-white shadow-sm">
       <div className="container">
+        {/* BRAND LOGO */}
         <Link
-          className="navbar-brand fw-bold fs-3 d-flex align-items-center gap-2"
+          className="navbar-brand d-flex align-items-center gap-2"
           to="/feed"
-          style={{ color: brandColor, letterSpacing: "-1px" }}
+          style={{ letterSpacing: "-1.5px" }}
         >
-          <i className="fa-solid fa-fire-flame-curved"></i>
-          <span>DevTinder</span>
+          <i
+            className="fa-solid fa-fire-flame-curved fs-2"
+            style={{ color: brandColor }}
+          ></i>
+          <h2 className="m-0 fw-black fs-3">
+            <span className="text-dark">Dev</span>
+            <span style={{ color: brandColor }}>Tinder</span>
+          </h2>
         </Link>
 
         <button
@@ -44,31 +60,35 @@ const Navbar = () => {
           data-bs-toggle="offcanvas"
           data-bs-target="#mobileMenu"
         >
-          <span className="navbar-toggler-icon"></span>
+          <i className="fa-solid fa-bars-staggered fs-3"></i>
         </button>
 
         <div className="collapse navbar-collapse d-none d-lg-flex justify-content-end">
           <ul className="navbar-nav align-items-center gap-4">
-            <Link className="nav-link fw-semibold" to="/feed">
-              Home
+            <Link className="nav-link fw-bold text-dark px-2" to="/feed">
+              <i className="fa-solid fa-house-chimney me-2 opacity-50"></i>Home
             </Link>
-            <Link className="nav-link fw-semibold" to="/connections">
+            <Link className="nav-link fw-bold text-dark px-2" to="/connections">
+              <i className="fa-solid fa-user-group me-2 opacity-50"></i>
               Connections
             </Link>
-            <Link className="nav-link fw-semibold" to="/support">
+            <Link className="nav-link fw-bold text-dark px-2" to="/support">
+              <i className="fa-solid fa-circle-question me-2 opacity-50"></i>
               Support
             </Link>
 
-            <Link to={"/profile"}>
+            <Link to="/profile" className="ms-2">
               <img
                 src={user?.photoURL || defaultPhoto}
-                className="rounded-circle border dropdown-toggle"
+                className="rounded-circle border border-2 shadow-sm"
                 style={{
-                  width: "38px",
-                  height: "38px",
+                  width: "42px",
+                  height: "42px",
                   cursor: "pointer",
                   objectFit: "cover",
+                  borderColor: brandColor,
                 }}
+                alt="Profile"
               />
             </Link>
           </ul>
@@ -78,12 +98,16 @@ const Navbar = () => {
           className="offcanvas offcanvas-end d-lg-none"
           id="mobileMenu"
           tabIndex="-1"
-          style={{ width: "70%", maxWidth: "300px" }}
+          style={{ width: "280px", borderRadius: "20px 0 0 20px" }}
         >
-          <div className="offcanvas-header border-bottom">
-            <h5 className="fw-bold mb-0" style={{ color: brandColor }}>
-              Menu
-            </h5>
+          <div className="offcanvas-header border-bottom py-4">
+            <div className="d-flex align-items-center gap-2">
+              <i
+                className="fa-solid fa-fire-flame-curved fs-3"
+                style={{ color: brandColor }}
+              ></i>
+              <h5 className="fw-bold mb-0">Menu</h5>
+            </div>
             <button
               type="button"
               className="btn-close shadow-none"
@@ -92,60 +116,69 @@ const Navbar = () => {
           </div>
 
           <div className="offcanvas-body d-flex flex-column p-0">
-            {/* User Mini Profile */}
-            <div className="p-4 bg-body-secondary d-flex align-items-center gap-3">
+            {/* User Profile Summary */}
+            <div className="p-4 bg-light d-flex align-items-center gap-3">
               <img
                 src={user?.photoURL || defaultPhoto}
-                className="rounded-circle border"
-                style={{ width: "45px", height: "45px" }}
+                className="rounded-circle border border-2 border-white shadow-sm"
+                style={{ width: "55px", height: "55px", objectFit: "cover" }}
               />
               <div>
-                <div className="fw-bold">{user.firstName}</div>
-                <small className="text-muted">Online</small>
+                <div className="fw-black text-dark fs-5">
+                  {user.firstName} {user.lastName}
+                </div>
+                <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
+                  <i
+                    className="fa-solid fa-circle me-1"
+                    style={{ fontSize: "8px" }}
+                  ></i>
+                  Active
+                </span>
               </div>
             </div>
 
             <div className="list-group list-group-flush p-3 flex-grow-1">
-              <Link
-                to="/feed"
-                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
-                data-bs-dismiss="offcanvas"
-              >
-                <i className="fa-solid fa-house me-3 text-secondary"></i> Home
-              </Link>
-              <Link
-                to="/connections"
-                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
-                data-bs-dismiss="offcanvas"
-              >
-                <i className="fa-solid fa-user-group me-3 text-secondary"></i>{" "}
-                Connections
-              </Link>
-              <Link
-                to="/messages"
-                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
-                data-bs-dismiss="offcanvas"
-              >
-                <i className="fa-solid fa-comment-dots me-3 text-secondary"></i>{" "}
-                Messages
-              </Link>
-              <Link
-                to="/profile"
-                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
-                data-bs-dismiss="offcanvas"
-              >
-                <i className="fa-solid fa-user-gear me-3 text-secondary"></i>{" "}
-                Profile
-              </Link>
+              {[
+                { to: "/feed", icon: "fa-house", label: "Home Feed" },
+                {
+                  to: "/connections",
+                  icon: "fa-user-group",
+                  label: "Connections",
+                },
+                {
+                  to: "/requests",
+                  icon: "fa-hand-holding-heart",
+                  label: "Requests",
+                },
+                { to: "/profile", icon: "fa-user-gear", label: "My Profile" },
+                {
+                  to: "/support",
+                  icon: "fa-circle-info",
+                  label: "Support & Help",
+                },
+              ].map((item, idx) => (
+                <Link
+                  key={idx}
+                  to={item.to}
+                  onClick={closeOffcanvas}
+                  className="list-group-item list-group-item-action border-0 py-3 rounded-3 mb-1 d-flex align-items-center"
+                >
+                  <i
+                    className={`fa-solid ${item.icon} me-3 text-secondary fs-5`}
+                    style={{ width: "25px" }}
+                  ></i>
+                  <span className="fw-bold">{item.label}</span>
+                </Link>
+              ))}
             </div>
 
             <div className="p-4 border-top">
               <button
                 onClick={handleLogout}
-                className="btn btn-danger w-100 py-2 rounded-pill fw-bold"
-                data-bs-dismiss="offcanvas"
+                className="btn btn-danger w-100 py-3 rounded-pill fw-black shadow-sm d-flex align-items-center justify-content-center gap-2"
               >
-                Logout
+                <i className="fa-solid fa-right-from-bracket"></i>
+                LOGOUT
               </button>
             </div>
           </div>
