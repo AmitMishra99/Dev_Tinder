@@ -23,15 +23,10 @@ const SignupPage = () => {
     setError("");
     setLoading(true);
 
-    const { firstName, lastName, emailID, password } = formData;
-
     try {
-      await axios.post(
-        BASE_URL + "/signup",
-        { firstName, lastName, emailID, password },
-        { withCredentials: true },
-      );
-      
+      await axios.post(BASE_URL + "/signup", formData, {
+        withCredentials: true,
+      });
       navigate("/login");
     } catch (err) {
       setError(
@@ -51,7 +46,7 @@ const SignupPage = () => {
       style={{
         minHeight: "100vh",
         width: "100vw",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #FFF5F3 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -59,84 +54,127 @@ const SignupPage = () => {
       }}
     >
       <div
-        className="card border-0 shadow-lg p-4"
-        style={{ width: "100%", maxWidth: "450px", borderRadius: "15px" }}
+        className="card border-0 shadow-lg p-4 p-md-5"
+        style={{ width: "100%", maxWidth: "480px", borderRadius: "24px" }}
       >
-        <div className="text-center mb-4">
-          <h1
-            style={{ color: brandColor, fontWeight: "800", fontSize: "2.5rem" }}
+        <div className="text-center mb-5">
+          <div className="d-flex align-items-center justify-content-center gap-2 mb-1">
+            <i
+              className="fa-solid fa-fire-flame-curved fs-1"
+              style={{ color: brandColor }}
+            ></i>
+            <h1
+              className="m-0 fw-black"
+              style={{ letterSpacing: "-2px", fontSize: "2.8rem" }}
+            >
+              <span className="text-dark">Dev</span>
+              <span style={{ color: brandColor }}>Tinder</span>
+            </h1>
+          </div>
+          <p
+            className="text-muted fw-bold small text-uppercase letter-spacing-2"
+            style={{ letterSpacing: "2px" }}
           >
-            <span role="img" aria-label="flame">
-              🔥
-            </span>{" "}
-            DevTinder
-          </h1>
-          <p className="text-secondary fw-semibold">
-            Create your developer profile
+            Where Code Meets Its Match
           </p>
         </div>
 
         {error && (
-          <p className="text-danger text-center fw-semibold">{error}</p>
+          <div
+            className="alert alert-danger border-0 small py-2 text-center fw-bold mb-4"
+            style={{ borderRadius: "10px" }}
+          >
+            <i className="fa-solid fa-circle-exclamation me-2"></i> {error}
+          </div>
         )}
 
         <form onSubmit={handleSignup}>
-          <div className="row">
+          <div className="row g-3">
             <div className="col-md-6 mb-3">
-              <label className="form-label text-uppercase fw-bold small text-muted">
+              <label
+                className="form-label text-uppercase fw-bold x-small text-muted mb-1"
+                style={{ fontSize: "0.7rem" }}
+              >
                 First Name
               </label>
-              <input
-                name="firstName"
-                type="text"
-                className="form-control bg-light border-0"
-                value={formData.firstName}
-                onChange={handleChange}
-                placeholder="John"
-                required
-              />
+              <div className="input-group bg-light rounded-3">
+                <span className="input-group-text bg-transparent border-0 text-muted">
+                  <i className="fa-solid fa-user small"></i>
+                </span>
+                <input
+                  name="firstName"
+                  type="text"
+                  className="form-control bg-transparent border-0 shadow-none py-2"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="John"
+                  required
+                />
+              </div>
             </div>
 
             <div className="col-md-6 mb-3">
-              <label className="form-label text-uppercase fw-bold small text-muted">
+              <label
+                className="form-label text-uppercase fw-bold x-small text-muted mb-1"
+                style={{ fontSize: "0.7rem" }}
+              >
                 Last Name
               </label>
-              <input
-                name="lastName"
-                type="text"
-                className="form-control bg-light border-0"
-                value={formData.lastName}
-                onChange={handleChange}
-                placeholder="Doe"
-                required
-              />
+              <div className="input-group bg-light rounded-3">
+                <span className="input-group-text bg-transparent border-0 text-muted">
+                  <i className="fa-solid fa-signature small"></i>
+                </span>
+                <input
+                  name="lastName"
+                  type="text"
+                  className="form-control bg-transparent border-0 shadow-none py-2"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Doe"
+                  required
+                />
+              </div>
             </div>
           </div>
 
           <div className="mb-3">
-            <label className="form-label text-uppercase fw-bold small text-muted">
-              emailID Address
+            <label
+              className="form-label text-uppercase fw-bold x-small text-muted mb-1"
+              style={{ fontSize: "0.7rem" }}
+            >
+              Email Address
             </label>
-            <input
-              name="emailID"
-              type="emailID"
-              className="form-control bg-light border-0"
-              value={formData.emailID}
-              onChange={handleChange}
-              placeholder="john@example.com"
-              required
-            />
+            <div className="input-group bg-light rounded-3">
+              <span className="input-group-text bg-transparent border-0 text-muted">
+                <i className="fa-solid fa-envelope small"></i>
+              </span>
+              <input
+                name="emailID"
+                type="email"
+                className="form-control bg-transparent border-0 shadow-none py-2"
+                value={formData.emailID}
+                onChange={handleChange}
+                placeholder="john@example.com"
+                required
+              />
+            </div>
           </div>
 
           <div className="mb-4">
-            <label className="form-label text-uppercase fw-bold small text-muted">
+            <label
+              className="form-label text-uppercase fw-bold x-small text-muted mb-1"
+              style={{ fontSize: "0.7rem" }}
+            >
               Password
             </label>
-            <div className="input-group">
+            <div className="input-group bg-light rounded-3">
+              <span className="input-group-text bg-transparent border-0 text-muted">
+                <i className="fa-solid fa-lock small"></i>
+              </span>
               <input
                 name="password"
                 type={showPassword ? "text" : "password"}
-                className="form-control form-control-lg bg-light border-0"
+                className="form-control bg-transparent border-0 shadow-none py-2"
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
@@ -144,10 +182,12 @@ const SignupPage = () => {
               />
               <button
                 type="button"
-                className="btn btn-light border-0"
+                className="btn border-0 text-muted"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
-                {showPassword ? "Hide" : "Show"}
+                <i
+                  className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"} small`}
+                ></i>
               </button>
             </div>
           </div>
@@ -155,13 +195,21 @@ const SignupPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="btn btn-lg w-100 border-0 text-white fw-bold shadow-sm"
+            className="btn btn-lg w-100 border-0 text-white fw-bold shadow mt-2"
             style={{
               background: `linear-gradient(45deg, ${brandColor}, #FF416C)`,
-              borderRadius: "10px",
+              borderRadius: "12px",
+              padding: "12px",
             }}
           >
-            {loading ? "Creating account..." : "Create Account"}
+            {loading ? (
+              <>
+                <i className="fa-solid fa-circle-notch fa-spin me-2"></i>{" "}
+                Creating account...
+              </>
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
 
