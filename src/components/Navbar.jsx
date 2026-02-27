@@ -12,8 +12,6 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  if (!user) return null;
-
   const handleLogout = async () => {
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
@@ -22,110 +20,135 @@ const Navbar = () => {
       dispatch(clearConnections());
       navigate("/");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
+  if (!user) return null;
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top py-2">
+    <nav className="navbar navbar-expand-lg border-bottom sticky-top py-2 bg-body-tertiary">
       <div className="container">
-        {/* Brand Logo */}
         <Link
-          className="navbar-brand fw-bold fs-3"
+          className="navbar-brand fw-bold fs-3 d-flex align-items-center gap-2"
           to="/feed"
           style={{ color: brandColor, letterSpacing: "-1px" }}
         >
-          DevTinder
+          <i className="fa-solid fa-fire-flame-curved"></i>
+          <span>DevTinder</span>
         </Link>
 
-        {/* Mobile Toggle Button */}
         <button
-          className="navbar-toggler border-0 shadow-none"
+          className="navbar-toggler border-0 shadow-none d-lg-none"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#mobileMenu"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navbar Links & Dropdown */}
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto align-items-center gap-2">
-            <li className="nav-item">
-              <Link className="nav-link fw-semibold px-3" to="/feed">
-                Home
+        <div className="collapse navbar-collapse d-none d-lg-flex justify-content-end">
+          <ul className="navbar-nav align-items-center gap-4">
+            <Link className="nav-link fw-semibold" to="/feed">
+              Home
+            </Link>
+            <Link className="nav-link fw-semibold" to="/connections">
+              Connections
+            </Link>
+            <Link className="nav-link fw-semibold" to="/support">
+              Support
+            </Link>
+
+            <Link to={"/profile"}>
+              <img
+                src={user?.photoURL || defaultPhoto}
+                className="rounded-circle border dropdown-toggle"
+                style={{
+                  width: "38px",
+                  height: "38px",
+                  cursor: "pointer",
+                  objectFit: "cover",
+                }}
+              />
+            </Link>
+          </ul>
+        </div>
+
+        <div
+          className="offcanvas offcanvas-end d-lg-none"
+          id="mobileMenu"
+          tabIndex="-1"
+          style={{ width: "70%", maxWidth: "300px" }}
+        >
+          <div className="offcanvas-header border-bottom">
+            <h5 className="fw-bold mb-0" style={{ color: brandColor }}>
+              Menu
+            </h5>
+            <button
+              type="button"
+              className="btn-close shadow-none"
+              data-bs-dismiss="offcanvas"
+            ></button>
+          </div>
+
+          <div className="offcanvas-body d-flex flex-column p-0">
+            {/* User Mini Profile */}
+            <div className="p-4 bg-body-secondary d-flex align-items-center gap-3">
+              <img
+                src={user?.photoURL || defaultPhoto}
+                className="rounded-circle border"
+                style={{ width: "45px", height: "45px" }}
+              />
+              <div>
+                <div className="fw-bold">{user.firstName}</div>
+                <small className="text-muted">Online</small>
+              </div>
+            </div>
+
+            <div className="list-group list-group-flush p-3 flex-grow-1">
+              <Link
+                to="/feed"
+                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
+                data-bs-dismiss="offcanvas"
+              >
+                <i className="fa-solid fa-house me-3 text-secondary"></i> Home
               </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link fw-semibold px-3" to="/connections">
+              <Link
+                to="/connections"
+                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
+                data-bs-dismiss="offcanvas"
+              >
+                <i className="fa-solid fa-user-group me-3 text-secondary"></i>{" "}
                 Connections
               </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link fw-semibold px-3" to="/messages">
+              <Link
+                to="/messages"
+                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
+                data-bs-dismiss="offcanvas"
+              >
+                <i className="fa-solid fa-comment-dots me-3 text-secondary"></i>{" "}
                 Messages
               </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link fw-semibold px-3" to="/support">
-                Support
+              <Link
+                to="/profile"
+                className="list-group-item list-group-item-action border-0 py-3 rounded-3"
+                data-bs-dismiss="offcanvas"
+              >
+                <i className="fa-solid fa-user-gear me-3 text-secondary"></i>{" "}
+                Profile
               </Link>
-            </li>
+            </div>
 
-            {/* Profile Dropdown */}
-            <li className="nav-item dropdown ms-lg-3">
-              <a
-                className="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
+            <div className="p-4 border-top">
+              <button
+                onClick={handleLogout}
+                className="btn btn-danger w-100 py-2 rounded-pill fw-bold"
+                data-bs-dismiss="offcanvas"
               >
-                <img
-                  src={user?.photoURL || defaultPhoto}
-                  alt="User"
-                  className="rounded-circle border"
-                  style={{ width: "35px", height: "35px", objectFit: "cover" }}
-                />
-                <span className="d-lg-none fw-semibold">Profile Settings</span>
-              </a>
-              <ul
-                className="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2"
-                aria-labelledby="navbarDropdown"
-                style={{ borderRadius: "15px" }}
-              >
-                <li>
-                  <Link className="dropdown-item rounded-3 py-2" to="/profile">
-                    My Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="dropdown-item rounded-3 py-2"
-                    to="/profile/edit"
-                  >
-                    Edit Profile
-                  </Link>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    to="/"
-                    className="dropdown-item rounded-3 py-2 text-danger fw-bold"
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </li>
-          </ul>
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
