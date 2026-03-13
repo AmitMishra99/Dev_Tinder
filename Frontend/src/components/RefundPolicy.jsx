@@ -15,7 +15,6 @@ const RefundPolicy = () => {
           border: "1px solid rgba(0,0,0,0.05)",
         }}
       >
-        {/* Header */}
         <div className="d-flex align-items-center mb-4">
           <button
             onClick={() => navigate(-1)}
@@ -30,7 +29,6 @@ const RefundPolicy = () => {
         <p className="text-muted mb-4">Last Updated: March 13, 2026</p>
         <hr className="opacity-10 mb-5" />
 
-        {/* Section 1 */}
         <div className="mb-5">
           <h5 className="fw-bold d-flex align-items-center">
             <i
@@ -47,7 +45,6 @@ const RefundPolicy = () => {
           </p>
         </div>
 
-        {/* Section 2 */}
         <div className="mb-5">
           <h5 className="fw-bold d-flex align-items-center">
             <i
@@ -71,7 +68,6 @@ const RefundPolicy = () => {
           </ul>
         </div>
 
-        {/* Section 3 */}
         <div
           className="mb-5 p-4 rounded-4"
           style={{
@@ -106,7 +102,6 @@ const RefundPolicy = () => {
           </ul>
         </div>
 
-        {/* Section 4 */}
         <div className="mb-5">
           <h5 className="fw-bold d-flex align-items-center">
             <i
@@ -122,7 +117,6 @@ const RefundPolicy = () => {
           </p>
         </div>
 
-        {/* Support Box */}
         <div className="bg-dark text-white p-4 rounded-4 d-flex align-items-center justify-content-between">
           <div>
             <h6 className="mb-1 fw-bold">Need help with billing?</h6>
