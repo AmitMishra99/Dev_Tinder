@@ -17,6 +17,9 @@ import Requests from "../pages/Feed/Requests";
 import Support from "../pages/Support/Support";
 import Chat from "../pages/Message/Chat";
 import ErrorPage from "../pages/Error/ErrorPage";
+import Terms from "../components/Terms";
+import PrivacyPolicy from "../components/PrivacyPolicy";
+import RefundPolicy from "../components/RefundPolicy";
 
 const App = () => {
   return (
@@ -38,6 +41,9 @@ const App = () => {
             <Route path="/requests" element={<Requests />} />
             <Route path="/chat/:targetID" element={<Chat />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
           </Route>
 
           {/* Error */}

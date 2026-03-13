@@ -3,87 +3,105 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   const brandColor = "#FF4B2B";
-  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white border-top py-3 mt-auto">
+    <footer className="bg-white border-top py-5 mt-auto">
       <div className="container">
-        <div className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
-          {/* Brand & Tagline */}
-          <div className="d-flex align-items-center gap-2">
-            <i
-              className="fa-solid fa-fire-flame-curved"
-              style={{ color: brandColor, fontSize: "1.2rem" }}
-            ></i>
-            <span
-              className="fw-black text-dark"
-              style={{ letterSpacing: "-1px" }}
-            >
-              Dev<span style={{ color: brandColor }}>Tinder</span>
-            </span>
-            <span
-              className="text-muted d-none d-sm-inline ms-2"
-              style={{ fontSize: "0.8rem" }}
-            >
-              • Explore & Connect
-            </span>
-          </div>
-
-          {/* Quick Links - Small & Clean */}
-          <div className="d-flex align-items-center gap-4">
-            <Link to="/feed" className="mini-link">
-              Feed
-            </Link>
-            <Link to="/connections" className="mini-link">
-              Network
-            </Link>
-            <Link to="/support" className="mini-link">
-              Support
-            </Link>
-            <div className="vr d-none d-md-block opacity-10"></div>
-            <div className="d-flex gap-3">
-              <a href="#" className="text-secondary small-icon">
+        <div className="row gy-4">
+          <div className="col-lg-4 col-md-6">
+            <h5 className="fw-bold mb-3" style={{ color: brandColor }}>
+              DevTinder
+            </h5>
+            <p className="text-muted small">
+              Connecting developers around the world. Find your coding partner,
+              collaborator, or soulmate today.
+            </p>
+            <div className="d-flex gap-3 mt-3">
+              <a href="#" className="text-muted">
                 <i className="fa-brands fa-github"></i>
               </a>
-              <a href="#" className="text-secondary small-icon">
-                <i className="fa-brands fa-linkedin-in"></i>
+              <a href="#" className="text-muted">
+                <i className="fa-brands fa-linkedin"></i>
+              </a>
+              <a href="#" className="text-muted">
+                <i className="fa-brands fa-twitter"></i>
               </a>
             </div>
           </div>
 
-          {/* Copyright */}
-          <div
-            className="text-muted"
-            style={{ fontSize: "0.75rem", fontWeight: "600" }}
-          >
-            © {currentYear} • Built for Devs
+          <div className="col-lg-2 col-md-6">
+            <h6 className="fw-bold mb-3">Platform</h6>
+            <ul className="list-unstyled small">
+              <li className="mb-2">
+                <Link to="/feed" className="text-decoration-none text-muted">
+                  Explore
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link
+                  to="/connections"
+                  className="text-decoration-none text-muted"
+                >
+                  Connections
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/premium" className="text-decoration-none text-muted">
+                  Premium
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="col-lg-3 col-md-6">
+            <h6 className="fw-bold mb-3">Legal & Privacy</h6>
+            <ul className="list-unstyled small">
+              <li className="mb-2">
+                <Link
+                  to="/privacy-policy"
+                  className="text-decoration-none text-muted"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/terms" className="text-decoration-none text-muted">
+                  Terms of Service
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link
+                  to="/refund-policy"
+                  className="text-decoration-none text-muted"
+                >
+                  Refund Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="col-lg-3 col-md-6">
+            <h6 className="fw-bold mb-3">Support</h6>
+            <p className="text-muted small mb-1">
+              <i className="fa-solid fa-envelope me-2"></i>{" "}
+              support@devtinder.com
+            </p>
+            <p className="text-muted small">
+              <i className="fa-solid fa-location-dot me-2"></i> Mumbai, India
+            </p>
           </div>
         </div>
-      </div>
 
-      <style>{`
-        .mini-link {
-          text-decoration: none;
-          color: #6c757d;
-          font-size: 0.85rem;
-          font-weight: 700;
-          transition: all 0.2s ease;
-        }
-        .mini-link:hover {
-          color: ${brandColor};
-        }
-        .small-icon {
-          font-size: 1rem;
-          transition: transform 0.2s ease, color 0.2s ease;
-        }
-        .small-icon:hover {
-          color: ${brandColor} !important;
-          transform: translateY(-2px);
-        }
-        .fw-black {
-          font-weight: 900;
-        }
-      `}</style>
+        <hr className="my-4 opacity-25" />
+
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted">
+          <p className="mb-0">© 2026 DevTinder. All rights reserved.</p>
+          <p className="mb-0">
+            Made with <i className="fa-solid fa-heart text-danger"></i> for
+            Developers
+          </p>
+        </div>
+      </div>
     </footer>
   );
 };
