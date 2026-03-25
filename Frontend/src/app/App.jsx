@@ -9,7 +9,7 @@ import MainLayout from "../layouts/MainLayout";
 import HomePage from "../pages/Home/HomePage";
 import LoginPage from "../pages/Auth/LoginPage";
 import SignupPage from "../pages/Auth/SignupPage";
-import FeedPage from "../Pages/Feed/FeedPage";
+import FeedPage from "../pages/Feed/FeedPage";
 import Profile from "../pages/Profile/Profile";
 import EditProfile from "../pages/Profile/EditProfile";
 import Connections from "../pages/Feed/Connections";
