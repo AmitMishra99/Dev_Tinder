@@ -103,6 +103,17 @@ Pagination - skip and limit Options are left
                     also validate the passing quarries skip , limitn& {age}
     Syntax : Ex. http://localhost:8000/feed?page=1&limit=10
 
-## => Scoket.io 
+## => Scoket.io : 
 
     - Installing npm i socket.io
+
+## => Payment Integration : 
+
+    Two Step Process : 
+        - There are multiple probles acoss the razropay 
+        - Now it could be related to the payment integration as well authenitication 
+        - authentication need verification as well 
+
+    Step 1 : Order is created            / createOrder
+    Step 2 : Payment Verification    /  verifyPayment
+
