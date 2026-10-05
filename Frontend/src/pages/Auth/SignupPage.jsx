@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BASE_URL } from "../../utils/constants";
+import api from "../../config/axios";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -24,9 +23,7 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      await axios.post(BASE_URL + "/signup", formData, {
-        withCredentials: true,
-      });
+      await api.post("auth/signup", formData);
       navigate("/login");
     } catch (err) {
       setError(

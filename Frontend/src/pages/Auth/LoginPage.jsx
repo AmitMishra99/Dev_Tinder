@@ -1,9 +1,8 @@
 import { useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../store/userSlice";
-import { BASE_URL } from "../../utils/constants";
+import api from "../../config/axios";
 
 const LoginPage = () => {
   const brandColor = "#FF4B2B";
@@ -23,12 +22,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        BASE_URL + "/login",
-        { emailID, password },
-        { withCredentials: true },
-      );
-
+      const res = await api.post("auth/login", { emailID, password });
       dispatch(addUser(res.data.user));
       navigate("/profile/edit");
     } catch (err) {
