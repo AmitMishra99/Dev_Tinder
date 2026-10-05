@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
-import { BASE_URL } from "../../utils/constants";
 import { addUser } from "../../store/userSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import api from "../../config/axios";
 
 const EditProfile = () => {
   const user = useSelector((store) => store.user);
@@ -27,19 +26,16 @@ const EditProfile = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.patch(
-        BASE_URL + "/profile/edit",
-        {
-          ...formData,
-          skills: formData.skills.split(",").map((s) => s.trim()),
-        },
-        { withCredentials: true },
-      );
+      const res = await api.patch("/profile/edit", {
+        ...formData,
+        skills: formData.skills.split(",").map((s) => s.trim()),
+      });
 
-      dispatch(addUser(res.data.data));
+      dispatch(addUser(res.data.user));
       toast.success("Profile updated!");
       navigate("/feed");
     } catch (err) {
+      console.log(err);
       toast.error(err?.response?.data || "Something went wrong");
     }
   };
@@ -71,7 +67,7 @@ const EditProfile = () => {
             </div>
             <h2 className="fw-black mb-1">Edit Profile</h2>
             <p className="text-muted small fw-bold text-uppercase">
-              Update your developer persona
+              Update your developer profile
             </p>
           </div>
 

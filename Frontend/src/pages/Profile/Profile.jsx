@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import toast from "react-hot-toast";
-import { BASE_URL, defaultPhoto } from "../../utils/constants";
+import { defaultPhoto } from "../../utils/constants";
 import LoaderPage from "../../pages/Loader/LoaderPage";
+import api from "../../config/axios";
 
 const Profile = () => {
   const brandColor = "#FF4B2B";
@@ -12,7 +12,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      await api.post("/auth/logout", {});
       toast.success("Logged out successfully", {
         icon: (
           <i
@@ -24,6 +24,7 @@ const Profile = () => {
       });
       navigate("/");
     } catch (err) {
+      console.log("frontend - profile err - ", err);
       toast.error("Logout failed");
     }
   };

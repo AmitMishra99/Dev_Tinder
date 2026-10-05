@@ -23,7 +23,7 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      await api.post("auth/signup", formData);
+      await api.post("/auth/signup", formData);
       navigate("/login");
     } catch (err) {
       setError(

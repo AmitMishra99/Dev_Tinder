@@ -22,7 +22,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await api.post("auth/login", { emailID, password });
+      const res = await api.post("/auth/login", { emailID, password });
       dispatch(addUser(res.data.user));
       navigate("/profile/edit");
     } catch (err) {
