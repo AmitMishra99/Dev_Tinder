@@ -1,10 +1,16 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const app = express();
-require("dotenv").config();
-const connectDB = require("./config/database.js");
 const cors = require("cors");
-const http = require("http");
+const dotenv = require("dotenv");
+dotenv.config();
+
+const connectDb = require("./config/connectDB.js");
+
+const app = express();
+const port = process.env.port || 3000;
+
+app.use(cookieParser());
+app.use(express.json());
 
 app.use(
   cors({
@@ -12,32 +18,25 @@ app.use(
     credentials: true,
   }),
 );
-app.use(cookieParser());
-app.use(express.json());
 
-const authRouter = require("./routes/auth.js");
-const profileRouter = require("./routes/profile.js");
-const reqRouter = require("./routes/req.js");
-const userRouter = require("./routes/user.js");
-const chatRouter = require("./routes/chatRoute.js");
-const initializeSocket = require("./config/socket.js");
+const authRouter = require("./routes/auth.route.js");
+const profileRouter = require("./routes/profile.route.js");
+const usersRouter = require("./routes/users.route.js");
+const reqRouter = require("./routes/request.route.js");
 
-app.use("/", authRouter);
-app.use("/", profileRouter);
-app.use("/", reqRouter);
-app.use("/", userRouter);
-app.use("/", chatRouter);
+const { userAuth } = require("./middlewares/user.Auth.js");
 
-const server = http.createServer(app);
-initializeSocket(server);
+app.use("/api/auth", authRouter);
+app.use("/api/profile", userAuth, profileRouter);
+app.use("/api/users", userAuth, usersRouter);
+app.use("/api/request", userAuth, reqRouter);
 
-connectDB()
+connectDb()
   .then(() => {
-    console.log("Database Connection Established");
-    server.listen(process.env.PORT, () => {
-      console.log(`Server listening on port - ${process.env.PORT}`);
+    app.listen(port, () => {
+      console.log(`Server listening on port - ${port}`);
     });
   })
   .catch((err) => {
-    console.error("Database cannot be connected !!", err);
+    console.error("Server error - ", err);
   });

@@ -1,5 +1,6 @@
 ## Dev_Tinder API's :
-------------------------
+
+---
 
 # authRouter :
 
