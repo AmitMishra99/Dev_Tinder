@@ -15,7 +15,6 @@
 
         - GET /profile
         - PATCH /profile/edit
-        - PATCH /profile/password
 
 # connectionRequestRouter :
 

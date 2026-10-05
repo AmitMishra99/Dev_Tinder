@@ -77,32 +77,31 @@ const getFeed = async (req, res) => {
   try {
     const loggedInUser = req.user;
 
-    const page = Math.max(parseInt(req.query.page) || 1, 1);
-    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
-
-    const skip = (page - 1) * limit;
-
-    // Find users already connected or involved in a request
+    // Find users who should NOT appear in the feed
     const connectionRequests = await ConnectionReq.find({
       $or: [{ senderID: loggedInUser._id }, { receiverID: loggedInUser._id }],
+      status: {
+        $in: ["interested", "accepted", "ignored"],
+      },
     }).select("senderID receiverID");
 
-    const hideUsersFromFeed = new Set();
+    const excludedUserIds = new Set();
 
+    // Don't show logged-in user
+    excludedUserIds.add(loggedInUser._id.toString());
+
+    // Don't show users already involved in active/accepted requests
     connectionRequests.forEach((request) => {
-      hideUsersFromFeed.add(request.senderID.toString());
-      hideUsersFromFeed.add(request.receiverID.toString());
+      excludedUserIds.add(request.senderID.toString());
+      excludedUserIds.add(request.receiverID.toString());
     });
 
-    // Also hide the logged-in user
-    hideUsersFromFeed.add(loggedInUser._id.toString());
-
+    // Get all eligible users
     const users = await User.find({
-      _id: { $nin: Array.from(hideUsersFromFeed) },
-    })
-      .select(USER_DATA)
-      .skip(skip)
-      .limit(limit);
+      _id: {
+        $nin: [...excludedUserIds],
+      },
+    }).select(USER_DATA);
 
     return res.status(200).json({
       success: true,
