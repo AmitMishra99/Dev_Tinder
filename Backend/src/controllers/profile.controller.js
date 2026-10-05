@@ -68,59 +68,7 @@ const editProfile = async (req, res) => {
   }
 };
 
-// Change logged-in user's password
-const updatePassword = async (req, res) => {
-  try {
-    const { oldPassword, newPassword } = req.body;
-
-    if (!oldPassword || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        error: "Old and new passwords are required",
-      });
-    }
-
-    // Load user with hashed password
-    const user = await User.findById(req.user._id).select("+password");
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: "User not found",
-      });
-    }
-
-    // Verify old password
-    const isMatch = await user.passwordValid(oldPassword);
-
-    if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        error: "Old password is incorrect",
-      });
-    }
-
-    // pre("save") in User model will hash the new password
-    user.password = newPassword;
-
-    await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: `${user.firstName}, password changed successfully`,
-    });
-  } catch (err) {
-    console.error("Password Change Error:", err);
-
-    return res.status(500).json({
-      success: false,
-      error: "Internal Server Error",
-    });
-  }
-};
-
 module.exports = {
   getProfile,
   editProfile,
-  updatePassword,
 };

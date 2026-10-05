@@ -5,11 +5,9 @@ const profileRouter = express.Router();
 const {
   getProfile,
   editProfile,
-  updatePassword,
 } = require("../controllers/profile.controller.js");
 
-profileRouter.get("/profile", getProfile);
-profileRouter.patch("/profile/edit", editProfile);
-profileRouter.patch("/profile/edit/password", updatePassword);
+profileRouter.get("/", getProfile);
+profileRouter.patch("/edit", editProfile);
 
 module.exports = profileRouter;
