@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { BASE_URL, defaultPhoto } from "../../utils/constants";
+import { useEffect, useState } from "react";
+import { defaultPhoto } from "../../utils/constants";
 import toast from "react-hot-toast";
 import LoaderPage from "../Loader/LoaderPage";
+import api from "../../config/axios";
 
 const Requests = () => {
   const brandColor = "#FF4B2B";
@@ -12,11 +12,10 @@ const Requests = () => {
   const fetchRequests = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(BASE_URL + "/user/requests", {
-        withCredentials: true,
-      });
+      const res = await api.get("/users/requests");
       setRequests(res.data.data);
     } catch (err) {
+      console.error("Error fetching requests:", err);
       toast.error("Failed to fetch requests");
     } finally {
       setLoading(false);
@@ -25,14 +24,11 @@ const Requests = () => {
 
   const reviewRequest = async (status, _id) => {
     try {
-      await axios.post(
-        BASE_URL + "/request/review/" + status + "/" + _id,
-        {},
-        { withCredentials: true },
-      );
+      await api.post(`/request/review/${status}/${_id}`, {});
       setRequests((prev) => prev.filter((req) => req._id !== _id));
       toast.success(`Request ${status} !`);
     } catch (err) {
+      console.error("Error reviewing request:", err);
       toast.error("Action failed");
     }
   };

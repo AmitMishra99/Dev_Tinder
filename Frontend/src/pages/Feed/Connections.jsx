@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { BASE_URL, defaultPhoto } from "../../utils/constants";
+import { useEffect, useState } from "react";
+import { defaultPhoto } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../../store/connectionsSlice";
 import LoaderPage from "../Loader/LoaderPage";
+import api from "../../config/axios";
 
 const Connections = () => {
   const navigate = useNavigate();
@@ -19,12 +19,8 @@ const Connections = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const connRes = await axios.get(BASE_URL + "/user/connections", {
-        withCredentials: true,
-      });
-      const reqRes = await axios.get(BASE_URL + "/user/requests", {
-        withCredentials: true,
-      });
+      const connRes = await api.get("/users/connections");
+      const reqRes = await api.get("/users/requests");
 
       dispatch(addConnections(connRes.data.data));
       setRequestCount(reqRes.data.data.length);

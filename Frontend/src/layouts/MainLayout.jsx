@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/userSlice";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import api from "../config/axios";
 
 const MainLayout = () => {
   const dispatch = useDispatch();
@@ -17,9 +16,7 @@ const MainLayout = () => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/profile", {
-        withCredentials: true,
-      });
+      const res = await api.get("/profile");
       dispatch(addUser(res.data.user));
     } catch (err) {
       navigate("/login");

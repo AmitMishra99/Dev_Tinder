@@ -1,7 +1,6 @@
-import axios from "axios";
-import React from "react";
-import { BASE_URL, defaultPhoto } from "../../utils/constants";
+import { defaultPhoto } from "../../utils/constants";
 import toast from "react-hot-toast";
+import api from "../../config/axios";
 
 const UserCard = ({ user, onReview }) => {
   if (!user) return null;
@@ -11,11 +10,7 @@ const UserCard = ({ user, onReview }) => {
 
   const handleAction = async (status) => {
     try {
-      const res = await axios.post(
-        `${BASE_URL}/request/send/${status}/${_id}`,
-        {},
-        { withCredentials: true },
-      );
+      await api.post(`/request/send/${status}/${_id}`, {});
 
       if (status === "interested") {
         toast.success("Interested!", {

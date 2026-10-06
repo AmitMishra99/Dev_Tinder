@@ -1,32 +1,36 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { BASE_URL, defaultPhoto } from "../utils/constants";
+
+import { defaultPhoto } from "../utils/constants";
 import { removeUser } from "../store/userSlice";
 import { clearFeed } from "../store/feedSlice";
 import { clearConnections } from "../store/connectionsSlice";
+import api from "../config/axios";
 
 const Navbar = () => {
   const brandColor = "#FF4B2B";
+
   const user = useSelector((store) => store.user);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const closeOffcanvas = () => {
-    const menu = document.getElementById("mobileMenu");
-    if (menu) {
-      const bsOffcanvas = window.bootstrap?.Offcanvas.getInstance(menu);
-      bsOffcanvas?.hide();
-    }
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
   };
 
   const handleLogout = async () => {
     try {
-      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      await api.post("/auth/logout", {});
+
       dispatch(removeUser());
       dispatch(clearFeed());
       dispatch(clearConnections());
-      closeOffcanvas();
+
+      closeMenu();
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -35,155 +39,200 @@ const Navbar = () => {
 
   if (!user) return null;
 
+  const navLinks = [
+    {
+      to: "/feed",
+      icon: "fa-house",
+      label: "Home",
+    },
+    {
+      to: "/connections",
+      icon: "fa-user-group",
+      label: "Connections",
+    },
+    {
+      to: "/requests",
+      icon: "fa-hand-holding-heart",
+      label: "Requests",
+    },
+    {
+      to: "/support",
+      icon: "fa-circle-question",
+      label: "Support",
+    },
+  ];
+
+  const mobileLinks = [
+    {
+      to: "/feed",
+      icon: "fa-house",
+      label: "Feed",
+    },
+    {
+      to: "/connections",
+      icon: "fa-user-group",
+      label: "Connections",
+    },
+    {
+      to: "/requests",
+      icon: "fa-hand-holding-heart",
+      label: "Requests",
+    },
+    {
+      to: "/profile",
+      icon: "fa-user-gear",
+      label: "Profile",
+    },
+    {
+      to: "/support",
+      icon: "fa-circle-info",
+      label: "Support & Help",
+    },
+  ];
+
   return (
-    <nav className="navbar navbar-expand-lg border-bottom sticky-top py-2 bg-white shadow-sm">
-      <div className="container">
-        <Link
-          className="navbar-brand d-flex align-items-center gap-2"
-          to="/feed"
-          style={{ letterSpacing: "-1.5px" }}
-        >
-          <i
-            className="fa-solid fa-fire-flame-curved fs-2"
-            style={{ color: brandColor }}
-          ></i>
-          <h2 className="m-0 fw-black fs-3">
-            <span className="text-dark">Dev</span>
-            <span style={{ color: brandColor }}>Tinder</span>
-          </h2>
-        </Link>
+    <>
+      {/* ================= NAVBAR ================= */}
+      <nav className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white shadow-sm">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Logo */}
+          <Link
+            to="/feed"
+            onClick={closeMenu}
+            className="flex items-center gap-2 no-underline outline-none focus:outline-none"
+          >
+            <i
+              className="fa-solid fa-fire-flame-curved text-3xl"
+              style={{ color: brandColor }}
+            />
 
-        <button
-          className="navbar-toggler border-0 shadow-none d-lg-none"
-          type="button"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#mobileMenu"
-        >
-          <i className="fa-solid fa-bars-staggered fs-3"></i>
-        </button>
+            <h2 className="m-0 text-2xl font-extrabold tracking-tight">
+              <span className="text-gray-900">Dev</span>
+              <span style={{ color: brandColor }}>Tinder</span>
+            </h2>
+          </Link>
 
-        <div className="collapse navbar-collapse d-none d-lg-flex justify-content-end">
-          <ul className="navbar-nav align-items-center gap-4">
-            <Link className="nav-link fw-bold text-dark px-2" to="/feed">
-              <i className="fa-solid fa-house-chimney me-2 opacity-50"></i>Home
-            </Link>
-            <Link className="nav-link fw-bold text-dark px-2" to="/connections">
-              <i className="fa-solid fa-user-group me-2 opacity-50"></i>
-              Connections
-            </Link>
-            <Link className="nav-link fw-bold text-dark px-2" to="/support">
-              <i className="fa-solid fa-circle-question me-2 opacity-50"></i>
-              Support
-            </Link>
-
-            <Link to="/profile" className="ms-2">
-              <img
-                src={user?.photoURL || defaultPhoto}
-                className="rounded-circle border border-2 shadow-sm"
-                style={{
-                  width: "42px",
-                  height: "42px",
-                  cursor: "pointer",
-                  objectFit: "cover",
-                  borderColor: brandColor,
-                }}
-                alt="Profile"
-              />
-            </Link>
-          </ul>
-        </div>
-
-        <div
-          className="offcanvas offcanvas-end d-lg-none"
-          id="mobileMenu"
-          tabIndex="-1"
-          style={{ width: "280px", borderRadius: "20px 0 0 20px" }}
-        >
-          <div className="offcanvas-header border-bottom py-4">
-            <div className="d-flex align-items-center gap-2">
-              <i
-                className="fa-solid fa-fire-flame-curved fs-3"
-                style={{ color: brandColor }}
-              ></i>
-              <h5 className="fw-bold mb-0">Menu</h5>
-            </div>
-            <button
-              type="button"
-              className="btn-close shadow-none"
-              data-bs-dismiss="offcanvas"
-            ></button>
-          </div>
-
-          <div className="offcanvas-body d-flex flex-column p-0">
-            {/* User Profile Summary */}
-            <div className="p-4 bg-light d-flex align-items-center gap-3">
-              <img
-                src={user?.photoURL || defaultPhoto}
-                className="rounded-circle border border-2 border-white shadow-sm"
-                style={{ width: "55px", height: "55px", objectFit: "cover" }}
-              />
-              <div>
-                <div className="fw-black text-dark fs-5">
-                  {user.firstName} {user.lastName}
-                </div>
-                <span className="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
-                  <i
-                    className="fa-solid fa-circle me-1"
-                    style={{ fontSize: "8px" }}
-                  ></i>
-                  Active
-                </span>
-              </div>
-            </div>
-
-            <div className="list-group list-group-flush p-3 flex-grow-1">
-              {[
-                { to: "/feed", icon: "fa-house", label: "Home Feed" },
-                {
-                  to: "/connections",
-                  icon: "fa-user-group",
-                  label: "Connections",
-                },
-                {
-                  to: "/requests",
-                  icon: "fa-hand-holding-heart",
-                  label: "Requests",
-                },
-                { to: "/profile", icon: "fa-user-gear", label: "My Profile" },
-                {
-                  to: "/support",
-                  icon: "fa-circle-info",
-                  label: "Support & Help",
-                },
-              ].map((item, idx) => (
-                <Link
-                  key={idx}
-                  to={item.to}
-                  onClick={closeOffcanvas}
-                  className="list-group-item list-group-item-action border-0 py-3 rounded-3 mb-1 d-flex align-items-center"
-                >
-                  <i
-                    className={`fa-solid ${item.icon} me-3 text-secondary fs-5`}
-                    style={{ width: "25px" }}
-                  ></i>
-                  <span className="fw-bold">{item.label}</span>
-                </Link>
-              ))}
-            </div>
-
-            <div className="p-4 border-top">
-              <button
-                onClick={handleLogout}
-                className="btn btn-danger w-100 py-3 rounded-pill fw-black shadow-sm d-flex align-items-center justify-content-center gap-2"
+          {/* ================= DESKTOP NAV ================= */}
+          <div className="hidden items-center gap-5 lg:flex">
+            {navLinks.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="flex items-center gap-2 px-3 py-2 font-semibold text-gray-700 no-underline outline-none transition hover:text-[#FF4B2B] focus:outline-none focus:ring-0"
               >
-                <i className="fa-solid fa-right-from-bracket"></i>
-                LOGOUT
-              </button>
+                <i className={`fa-solid ${item.icon} text-sm text-gray-400`} />
+
+                {item.label}
+              </Link>
+            ))}
+
+            {/* Profile */}
+            <Link
+              to="/profile"
+              className="ml-2 block no-underline outline-none focus:outline-none focus:ring-0"
+            >
+              <img
+                src={user?.photoURL || defaultPhoto}
+                alt="Profile"
+                className="h-10 w-10 rounded-full border-2 object-cover shadow-sm transition hover:scale-105"
+                style={{ borderColor: brandColor }}
+              />
+            </Link>
+          </div>
+
+          {/* ================= MOBILE MENU BUTTON ================= */}
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(true)}
+            className="flex items-center justify-center rounded-lg border-0 bg-transparent p-2 text-gray-700 outline-none transition hover:bg-gray-100 focus:outline-none focus:ring-0 lg:hidden"
+            aria-label="Open menu"
+          >
+            <i className="fa-solid fa-bars-staggered text-2xl" />
+          </button>
+        </div>
+      </nav>
+
+      {/* ================= MOBILE OVERLAY ================= */}
+      {isMenuOpen && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/40 lg:hidden"
+          onClick={closeMenu}
+        />
+      )}
+
+      {/* ================= MOBILE SIDEBAR ================= */}
+      <aside
+        className={`fixed right-0 top-0 z-[70] flex h-full w-[280px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-gray-200 px-5 py-5">
+          <div className="flex items-center gap-2">
+            <i
+              className="fa-solid fa-fire-flame-curved text-2xl"
+              style={{ color: brandColor }}
+            />
+
+            <h5 className="m-0 text-lg font-bold text-gray-900">Menu</h5>
+          </div>
+
+          <button
+            type="button"
+            onClick={closeMenu}
+            className="border-0 bg-transparent p-2 text-gray-500 outline-none transition hover:text-gray-900 focus:outline-none focus:ring-0"
+            aria-label="Close menu"
+          >
+            <i className="fa-solid fa-xmark text-xl" />
+          </button>
+        </div>
+
+        {/* User Profile */}
+        <div className="flex items-center gap-3 bg-gray-50 p-5">
+          <img
+            src={user?.photoURL || defaultPhoto}
+            alt="Profile"
+            className="h-14 w-14 rounded-full border-2 border-white object-cover shadow-sm"
+          />
+
+          <div>
+            <div className="text-lg font-bold text-gray-900">
+              {user.firstName} {user.lastName}
             </div>
           </div>
         </div>
-      </div>
-    </nav>
+
+        {/* Mobile Links */}
+        <div className="flex-1 overflow-y-auto p-3">
+          {mobileLinks.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={closeMenu}
+              className="mb-1 flex items-center rounded-xl px-4 py-3.5 font-semibold text-gray-800 no-underline outline-none transition hover:bg-gray-100 hover:text-[#FF4B2B] focus:outline-none focus:ring-0"
+            >
+              <i
+                className={`fa-solid ${item.icon} mr-4 w-6 text-center text-lg text-gray-400`}
+              />
+
+              <span>{item.label}</span>
+            </Link>
+          ))}
+        </div>
+
+        {/* Logout */}
+        <div className="border-t border-gray-200 p-4">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full items-center justify-center gap-2 rounded-full border-0 bg-red-500 py-3.5 font-bold text-white shadow-sm outline-none transition hover:bg-red-600 focus:outline-none focus:ring-0"
+          >
+            <i className="fa-solid fa-right-from-bracket" />
+            LOGOUT
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };
 
