@@ -96,11 +96,6 @@ const Connections = () => {
                         }}
                         alt="user"
                       />
-                      {/* Online Status Dot */}
-                      <span
-                        className={`position-absolute bottom-0 end-0 border border-white border-2 rounded-circle p-1 ${user.isOnline ? "bg-success" : "bg-secondary"}`}
-                        style={{ width: "12px", height: "12px" }}
-                      ></span>
                     </div>
 
                     <div>
