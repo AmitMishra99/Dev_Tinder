@@ -1,5 +1,4 @@
 const express = require("express");
-const { userAuth } = require("../middlewares/user.Auth");
 const {
   getPendingRequests,
   getConnections,
@@ -9,12 +8,12 @@ const {
 const usersRouter = express.Router();
 
 // Get all pending connection requests
-usersRouter.get("/requests", userAuth, getPendingRequests);
+usersRouter.get("/requests", getPendingRequests);
 
 // Get all accepted connections
-usersRouter.get("/connections", userAuth, getConnections);
+usersRouter.get("/connections", getConnections);
 
 // Get users for feed
-usersRouter.get("/feed", userAuth, getFeed);
+usersRouter.get("/feed", getFeed);
 
 module.exports = usersRouter;
