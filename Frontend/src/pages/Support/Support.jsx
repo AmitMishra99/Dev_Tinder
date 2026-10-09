@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { brandColor, contactCards } from "../../utils/constants";
 import toast from "react-hot-toast";
 
 const Support = () => {
-  const brandColor = "#FF4B2B";
   const [formData, setFormData] = useState({ subject: "", message: "" });
 
   const handleSubmit = (e) => {
@@ -31,26 +31,7 @@ const Support = () => {
 
           <div className="row g-4 mb-5">
             {/* Contact Cards */}
-            {[
-              {
-                icon: "fa-envelope",
-                title: "Email Support",
-                desc: "support@devtinder.com",
-                color: "#007bff",
-              },
-              {
-                icon: "fa-brands fa-discord",
-                title: "Discord",
-                desc: "Join our Dev Community",
-                color: "#5865F2",
-              },
-              {
-                icon: "fa-book",
-                title: "Docs",
-                desc: "API & Usage Guide",
-                color: "#28a745",
-              },
-            ].map((item, i) => (
+            {contactCards.map((item, i) => (
               <div key={i} className="col-md-4">
                 <div
                   className="card border-0 shadow-sm text-center p-4 h-100 support-card"

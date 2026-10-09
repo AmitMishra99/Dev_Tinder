@@ -4,9 +4,9 @@ import toast from "react-hot-toast";
 import { defaultPhoto } from "../../utils/constants";
 import LoaderPage from "../../pages/Loader/LoaderPage";
 import api from "../../config/axios";
+import { brandColor } from "../../utils/constants";
 
 const Profile = () => {
-  const brandColor = "#FF4B2B";
   const user = useSelector((store) => store.user);
   const navigate = useNavigate();
 

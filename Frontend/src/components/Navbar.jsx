@@ -6,11 +6,11 @@ import { defaultPhoto } from "../utils/constants";
 import { removeUser } from "../store/userSlice";
 import { clearFeed } from "../store/feedSlice";
 import { clearConnections } from "../store/connectionsSlice";
+import { navLinks, mobileLinks } from "../utils/constants";
+import { brandColor } from "../utils/constants";
 import api from "../config/axios";
 
 const Navbar = () => {
-  const brandColor = "#FF4B2B";
-
   const user = useSelector((store) => store.user);
 
   const dispatch = useDispatch();
@@ -25,70 +25,17 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await api.post("/auth/logout", {});
-
       dispatch(removeUser());
       dispatch(clearFeed());
       dispatch(clearConnections());
-
       closeMenu();
       navigate("/");
     } catch (err) {
-      console.error(err);
+      console.error("handlel logou err -", err);
     }
   };
 
   if (!user) return null;
-
-  const navLinks = [
-    {
-      to: "/feed",
-      icon: "fa-house",
-      label: "Home",
-    },
-    {
-      to: "/connections",
-      icon: "fa-user-group",
-      label: "Connections",
-    },
-    {
-      to: "/requests",
-      icon: "fa-hand-holding-heart",
-      label: "Requests",
-    },
-    {
-      to: "/support",
-      icon: "fa-circle-question",
-      label: "Support",
-    },
-  ];
-
-  const mobileLinks = [
-    {
-      to: "/feed",
-      icon: "fa-house",
-      label: "Feed",
-    },
-    {
-      to: "/connections",
-      icon: "fa-user-group",
-      label: "Connections",
-    },
-    {
-      to: "/requests",
-      icon: "fa-hand-holding-heart",
-      label: "Requests",
-    },
-    {
-      to: "/profile",
-      icon: "fa-user-gear",
-      label: "Profile",
-    },
-    {
-      to: "/support",
-      icon: "fa-circle-info",
-      label: "Support & Help",
-    },
-  ];
 
   return (
     <>

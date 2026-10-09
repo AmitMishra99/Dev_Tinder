@@ -1,9 +1,7 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import { brandColor } from "../utils/constants";
 
 const Footer = () => {
-  const brandColor = "#FF4B2B";
-
   return (
     <footer className="bg-white border-top py-5 mt-auto">
       <div className="container">

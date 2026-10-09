@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addUser } from "../../store/userSlice";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";
+import { brandColor } from "../../utils/constants";
 
 const EditProfile = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const brandColor = "#FF4B2B";
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",

@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
+import { brandColor } from "../../utils/constants";
 
 const HomePage = () => {
-  const brandColor = "#FF4B2B";
-
   return (
     <div className="bg-white overflow-hidden">
       <section
