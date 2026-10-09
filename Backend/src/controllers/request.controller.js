@@ -41,6 +41,7 @@ const sendConnectionRequest = async (req, res) => {
         { senderID, receiverID },
         { senderID: receiverID, receiverID: senderID },
       ],
+      status: { $in: ["interested", "accepted"] },
     });
 
     if (existingRequest) {
