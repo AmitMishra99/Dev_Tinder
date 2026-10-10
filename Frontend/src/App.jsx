@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
-import appStore from "./app/appStore";
+import appStore from "./store/appStore";
 
 import MainLayout from "./layouts/MainLayout";
 
